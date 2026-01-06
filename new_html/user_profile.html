@@ -82,6 +82,7 @@
 
         <div class="flex-1 overflow-y-auto p-6 md:p-8 lg:p-12 space-y-12">
             <div class="flex flex-col lg:flex-row gap-12 max-w-7xl mx-auto">
+                
                 <aside class="w-full lg:w-96 flex-shrink-0 flex flex-col gap-8">
                     <div class="bg-surface-light dark:bg-surface-dark rounded-[40px] p-8 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center text-center relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-primary/30 via-primary/10 to-transparent"></div>
@@ -190,6 +191,7 @@
 
             if (!myId) { window.location.href = 'login.html'; return; }
             
+            // Hide edit buttons if viewing someone else's profile
             if (profileId !== myId) {
                 document.getElementById('edit-profile-btn').classList.add('hidden');
                 document.getElementById('photo-upload-btn').classList.add('hidden');
@@ -204,9 +206,10 @@
                 const user = await res.json();
                 currentUserData = user;
 
+                // Bind Data to UI
                 document.getElementById('profile-name').innerText = user.fullName;
                 document.getElementById('sidebar-name-small').innerText = user.fullName;
-                document.getElementById('profile-headline').innerText = user.headline || "Expert Mentor";
+                document.getElementById('profile-headline').innerText = user.headline || "Passionate Skill Swapper";
                 document.getElementById('profile-bio').innerText = user.bio || "This user hasn't added a bio yet.";
                 
                 const pic = user.profilePicture || "https://i.pravatar.cc/150";
@@ -218,23 +221,47 @@
             } catch (err) { console.error(err); }
         }
 
+        // ============================================
+        // SMART AI DOCTOR (Context-Aware Version)
+        // ============================================
         async function fixMyBio() {
             const bioArea = document.getElementById('edit-bio');
+            const teachSkills = document.getElementById('edit-teach-skills').value;
+            const learnSkills = document.getElementById('edit-learn-skills').value; // Sending context
+            const headline = document.getElementById('edit-headline').value;
+            const name = currentUserData.fullName;
+
+            if (!teachSkills && !headline && !learnSkills) {
+                alert("Please add a Headline or Skills first so the AI can help!");
+                return;
+            }
+
+            const originalText = bioArea.value;
             bioArea.value = "AI Doctor is crafting your professional bio... ✨";
             bioArea.disabled = true;
 
             try {
-                // Ensure the server has the most up-to-date context by sending user ID
+                // Sending FULL context to the new updated backend
                 const res = await fetch('http://127.0.0.1:5000/api/ai/generate-bio', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: myId }) 
+                    body: JSON.stringify({ 
+                        name: name, 
+                        skills: teachSkills, 
+                        headline: headline,
+                        learnSkills: learnSkills 
+                    })
                 });
                 
                 const data = await res.json();
-                if(data.bio) { bioArea.value = data.bio; } 
-                else { alert("AI error. Check server logs."); }
+                if(data.bio) {
+                    bioArea.value = data.bio;
+                } else {
+                    bioArea.value = originalText;
+                    alert("AI error. Check server logs.");
+                }
             } catch (e) {
+                bioArea.value = originalText;
                 alert("Connection error.");
             } finally {
                 bioArea.disabled = false;
@@ -265,32 +292,25 @@
 
         document.getElementById('edit-form').onsubmit = async (e) => {
             e.preventDefault();
-            
-            // CORRECTLY map input fields to the data object
             const data = {
                 fullName: currentUserData.fullName,
                 headline: document.getElementById('edit-headline').value,
                 bio: document.getElementById('edit-bio').value,
-                // Pass as comma-separated strings so the backend can handle the array conversion
-                skills: document.getElementById('edit-teach-skills').value, 
-                learnSkills: document.getElementById('edit-learn-skills').value
+                skills: document.getElementById('edit-teach-skills').value, // Used for teaching
+                learnSkills: document.getElementById('edit-learn-skills').value.split(',').map(s=>s.trim()).filter(s=>s)
             };
 
-            try {
-                const res = await fetch(`http://127.0.0.1:5000/api/users/${myId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
+            const res = await fetch(`http://127.0.0.1:5000/api/users/${myId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
 
-                if (res.ok) {
-                    closeEditModal();
-                    await loadProfileData(myId);
-                } else {
-                    alert("Failed to save changes.");
-                }
-            } catch (err) {
-                alert("Server error.");
+            if (res.ok) {
+                closeEditModal();
+                loadProfileData(myId);
+            } else {
+                alert("Failed to save changes.");
             }
         };
 
