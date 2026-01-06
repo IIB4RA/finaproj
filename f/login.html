@@ -112,22 +112,6 @@
     </div>
 
     <script>
-        // CORE APP LOGIC
-        const App = {
-            saveUser: (user) => {
-                // Store primary object for general use
-                localStorage.setItem('skillswap_user', JSON.stringify(user));
-                localStorage.setItem('isLoggedIn', 'true');
-                
-                // CRITICAL: Store these separately for the guards and credit checks on other pages
-                if (user.userId) localStorage.setItem('skillswap_temp_userid', user.userId);
-                if (user.roles) localStorage.setItem('skillswap_user_roles', JSON.stringify(user.roles));
-                
-                // SAVE CREDITS: This fixes the issue where pages thought you had 0 credits
-                localStorage.setItem('userCredits', user.creditBalance || 0); 
-            }
-        };
-
         // HANDLE LOGIN
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -155,18 +139,23 @@
                     return;
                 }
 
-                // SUCCESS: Save user details and credit balance
-                App.saveUser({
-                    userId: data.userId,
-                    fullName: data.fullName,
-                    roles: data.roles,
-                    profilePicture: data.profilePicture,
-                    creditBalance: data.creditBalance // Synced from Backend
-                });
+                // CRITICAL FIX: Store all details for Admin Guards and Credit Checks
+                localStorage.setItem('skillswap_temp_userid', data.userId);
+                localStorage.setItem('skillswap_user', JSON.stringify(data));
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                // Save roles as a JSON string to be checked by admin hub guard
+                if (data.roles) {
+                    localStorage.setItem('skillswap_user_roles', JSON.stringify(data.roles));
+                }
 
-                // REDIRECT based on user role
+                // Sync initial credits to prevent '0 credits' error on landing
+                localStorage.setItem('userCredits', data.creditBalance || 0);
+
+                // REDIRECT logic based on user role
+                // If roles array contains 'admin', send to admin hub
                 if (data.roles && data.roles.includes('admin')) {
-                    window.location.href = 'admin_dashboard.html';
+                    window.location.href = 'admin_hub.html'; 
                 } else {
                     window.location.href = 'user_dashboard.html';
                 }
