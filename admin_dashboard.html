@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Hub - SkillSwap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .filled { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-slate-50 font-['Plus_Jakarta_Sans']">
+
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-slate-900 text-white p-6 flex flex-col gap-8 hidden md:flex sticky top-0 h-screen">
+            <div class="flex items-center gap-2 text-blue-400 font-bold text-xl uppercase tracking-tighter">
+                <span class="material-symbols-outlined filled">shield_person</span> Admin Hub
+            </div>
+            <nav class="space-y-2 flex-1">
+                <a href="#" class="flex items-center gap-3 bg-blue-600 p-3 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/20">
+                    <span class="material-symbols-outlined">analytics</span> Overview
+                </a>
+                <a href="user_dashboard.html" class="flex items-center gap-3 p-3 text-slate-400 hover:bg-slate-800 rounded-xl transition-all">
+                    <span class="material-symbols-outlined">home</span> Main Site
+                </a>
+            </nav>
+            <button onclick="localStorage.clear(); window.location.href='login.html'" class="flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all font-bold">
+                <span class="material-symbols-outlined">logout</span> Logout
+            </button>
+        </aside>
+
+        <main class="flex-1 p-6 lg:p-12">
+            <div class="max-w-6xl mx-auto">
+                <header class="mb-10 flex justify-between items-end">
+                    <div>
+                        <h1 class="text-4xl font-black text-slate-900 mb-2 tracking-tight">Platform Performance</h1>
+                        <p class="text-slate-500">Global oversight of users and live exchanges.</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="live-indicator" class="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-bold border border-green-100">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                            Live System Data
+                        </span>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-white p-6 rounded-[32px] shadow-sm border border-slate-200">
+                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Total Community</p>
+                        <h2 id="stat-users" class="text-4xl font-black text-slate-900">0</h2>
+                        <p class="text-xs text-slate-400 mt-2">Registered accounts</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-[32px] shadow-sm border border-slate-200">
+                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Active Sessions</p>
+                        <h2 id="stat-bookings" class="text-4xl font-black text-slate-900">0</h2>
+                        <p class="text-xs text-slate-400 mt-2">Confirmed/Ready swaps</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-[32px] shadow-sm border border-slate-200">
+                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Economy Strength</p>
+                        <h2 id="stat-credits" class="text-4xl font-black text-slate-900">0 <span class="text-lg text-slate-300">Cr</span></h2>
+                        <p class="text-xs text-slate-400 mt-2">Total circulating credits</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[32px] shadow-sm border border-slate-200 overflow-hidden mb-10">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-green-500">videocam</span> Live Learning Sessions
+                        </h3>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[10px] uppercase font-black text-slate-400 border-b border-slate-50">
+                                <th class="p-6">Skill / Room</th>
+                                <th class="p-6">Mentor</th>
+                                <th class="p-6">Student</th>
+                                <th class="p-6 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessions-table" class="divide-y divide-slate-50">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-white rounded-[32px] shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-blue-500">person_add</span> Recent Registrations
+                        </h3>
+                    </div>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="text-[10px] uppercase font-black text-slate-400 border-b border-slate-50">
+                                <th class="p-6">User Identity</th>
+                                <th class="p-6">Email</th>
+                                <th class="p-6">Wallet Balance</th>
+                                <th class="p-6 text-center">Admin Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table" class="divide-y divide-slate-50">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- 1. Security Guard (Admin Only) ---
+        (async function checkAdmin() {
+            const userId = localStorage.getItem('skillswap_temp_userid');
+            if (!userId) { window.location.href = 'login.html'; return; }
+
+            const res = await fetch(`http://127.0.0.1:5000/api/users/${userId}`);
+            const user = await res.json();
+            
+            if (!user.roles || !user.roles.includes('admin')) {
+                alert("Restricted Access: Admins Only");
+                window.location.href = 'user_dashboard.html';
+            } else {
+                loadAdminData();
+                // Refresh data every 30 seconds for real-time feel
+                setInterval(loadAdminData, 30000);
+            }
+        })();
+
+        async function loadAdminData() {
+            try {
+                const res = await fetch('http://127.0.0.1:5000/api/admin/stats');
+                const data = await res.json();
+
+                // Update Cards
+                document.getElementById('stat-users').innerText = data.totalUsers;
+                document.getElementById('stat-bookings').innerText = data.totalBookings;
+                document.getElementById('stat-credits').innerText = data.totalPlatformCredits;
+
+                // Update Sessions Table
+                const sessionTable = document.getElementById('sessions-table');
+                if (data.activeSessions && data.activeSessions.length > 0) {
+                    sessionTable.innerHTML = data.activeSessions.map(s => `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-6">
+                                <p class="font-bold text-slate-900">${s.skill}</p>
+                                <p class="text-[10px] text-slate-400 font-mono tracking-tighter">ID: ${s._id.substring(0,8)}</p>
+                            </td>
+                            <td class="p-6 text-slate-600 text-sm font-medium">${s.teacherName}</td>
+                            <td class="p-6 text-slate-600 text-sm font-medium">${s.learnerName}</td>
+                            <td class="p-6 text-center">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${s.status === 'ready' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'}">
+                                    ${s.status}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    sessionTable.innerHTML = `<tr><td colspan="4" class="p-12 text-center text-slate-400 italic">No active sessions found.</td></tr>`;
+                }
+
+                // Update Users Table
+                const userTable = document.getElementById('user-table');
+                userTable.innerHTML = data.recentUsers.map(u => `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-6 flex items-center gap-3">
+                            <img src="${u.profilePicture || 'https://i.pravatar.cc/150'}" class="w-10 h-10 rounded-2xl border border-slate-200 shadow-sm object-cover">
+                            <span class="font-bold text-slate-900 text-sm">${u.fullName}</span>
+                        </td>
+                        <td class="p-6 text-slate-500 text-sm">${u.email}</td>
+                        <td class="p-6 font-bold text-blue-600 text-sm">${u.creditBalance || 0} Cr</td>
+                        <td class="p-6 text-center">
+                            <button onclick="deleteUser('${u._id}')" class="text-slate-300 hover:text-red-600 transition-all transform hover:scale-110">
+                                <span class="material-symbols-outlined text-xl">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error("Dashboard Sync Error:", err);
+            }
+        }
+
+        async function deleteUser(id) {
+            if(confirm("DANGER: Permanently delete this user from the system?")) {
+                const res = await fetch(`http://127.0.0.1:5000/api/admin/users/${id}`, { method: 'DELETE' });
+                if(res.ok) {
+                    loadAdminData();
+                } else {
+                    alert("Error deleting user.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>

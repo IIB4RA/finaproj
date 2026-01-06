@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Live Session - SkillSwap</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { primary: "#3B82F6", surface: "#1F2937", background: "#111827" },
+                    fontFamily: { display: ["Lexend", "sans-serif"] }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-white font-display h-screen flex flex-col overflow-hidden">
+
+    <header class="h-16 border-b border-gray-800 bg-surface px-6 flex items-center justify-between z-20">
+        <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined text-red-500 animate-pulse">radio_button_checked</span>
+            <div>
+                <h1 class="font-bold text-sm md:text-base">Advanced React Patterns</h1>
+                <p class="text-xs text-gray-400">00:12:45</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+            <span class="text-xs text-gray-400">Connection: Good</span>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden relative">
+        <div class="flex-1 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+            
+            <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800 group">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover opacity-90">
+                <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur px-3 py-1 rounded-lg text-sm font-medium flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">mic</span> Sarah Jenkins
+                </div>
+            </div>
+
+            <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl border border-gray-800 group">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover opacity-90 transform scale-x-[-1]">
+                <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur px-3 py-1 rounded-lg text-sm font-medium flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">mic</span> You
+                </div>
+                <div class="absolute top-4 right-4 flex gap-2">
+                    <div id="mute-indicator" class="hidden w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-sm">mic_off</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <aside class="hidden lg:flex w-80 bg-surface border-l border-gray-800 flex-col">
+            <div class="p-4 border-b border-gray-700 font-bold">Chat</div>
+            <div class="flex-1 p-4 space-y-4 overflow-y-auto text-sm">
+                <div>
+                    <span class="font-bold text-blue-400">Sarah:</span>
+                    <p class="text-gray-300">Can you see my screen?</p>
+                </div>
+                <div>
+                    <span class="font-bold text-gray-400">You:</span>
+                    <p class="text-gray-300">Yes, it's clear now.</p>
+                </div>
+                <div>
+                    <span class="font-bold text-blue-400">Sarah:</span>
+                    <p class="text-gray-300">Great, let's look at this component.</p>
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-700">
+                <form onsubmit="event.preventDefault();" class="flex gap-2">
+                    <input type="text" placeholder="Type..." class="w-full bg-gray-800 border-none rounded-lg text-sm focus:ring-1 focus:ring-primary">
+                    <button class="p-2 bg-primary rounded-lg hover:bg-blue-600 transition"><span class="material-symbols-outlined text-sm">send</span></button>
+                </form>
+            </div>
+        </aside>
+    </main>
+
+    <div class="h-20 bg-surface border-t border-gray-800 flex items-center justify-center gap-4 px-6 relative z-30">
+        
+        <button id="mic-btn" class="p-4 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors shadow-lg group">
+            <span class="material-symbols-outlined text-white">mic</span>
+        </button>
+        
+        <button id="cam-btn" class="p-4 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors shadow-lg">
+            <span class="material-symbols-outlined text-white">videocam</span>
+        </button>
+
+        <button class="p-4 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors shadow-lg hidden sm:block">
+            <span class="material-symbols-outlined text-white">screen_share</span>
+        </button>
+
+        <button class="p-4 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors shadow-lg hidden sm:block">
+            <span class="material-symbols-outlined text-white">chat</span>
+        </button>
+
+        <button id="end-call-btn" class="px-8 py-3 rounded-full bg-red-600 hover:bg-red-700 text-white font-bold transition-colors shadow-lg flex items-center gap-2 ml-4">
+            <span class="material-symbols-outlined">call_end</span>
+            <span class="hidden sm:inline">End Call</span>
+        </button>
+    </div>
+
+    <div id="review-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-surface p-8 rounded-2xl max-w-md w-full text-center border border-gray-700 shadow-2xl transform scale-95 opacity-0 transition-all duration-300" id="modal-content">
+            <h2 class="text-2xl font-bold mb-2">Session Ended</h2>
+            <p class="text-gray-400 mb-6">How was your session with Sarah?</p>
+            
+            <div class="flex justify-center gap-2 mb-8 text-gray-500 hover:text-yellow-400 transition-colors cursor-pointer">
+                <span class="material-symbols-outlined text-4xl hover:text-yellow-400">star</span>
+                <span class="material-symbols-outlined text-4xl hover:text-yellow-400">star</span>
+                <span class="material-symbols-outlined text-4xl hover:text-yellow-400">star</span>
+                <span class="material-symbols-outlined text-4xl hover:text-yellow-400">star</span>
+                <span class="material-symbols-outlined text-4xl hover:text-yellow-400">star</span>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="window.location.href='user_dashboard.html'" class="flex-1 py-3 rounded-xl bg-gray-700 hover:bg-gray-600 font-semibold">Skip</button>
+                <button onclick="window.location.href='user_dashboard.html'" class="flex-1 py-3 rounded-xl bg-primary hover:bg-blue-600 font-semibold text-white shadow-lg">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIC ---
+        const micBtn = document.getElementById('mic-btn');
+        const camBtn = document.getElementById('cam-btn');
+        const endBtn = document.getElementById('end-call-btn');
+        const reviewModal = document.getElementById('review-modal');
+        const modalContent = document.getElementById('modal-content');
+        const muteIndicator = document.getElementById('mute-indicator');
+
+        // Toggle Mic
+        micBtn.addEventListener('click', () => {
+            const icon = micBtn.querySelector('span');
+            if(icon.innerText === 'mic') {
+                icon.innerText = 'mic_off';
+                micBtn.classList.replace('bg-gray-700', 'bg-red-500');
+                micBtn.classList.replace('hover:bg-gray-600', 'hover:bg-red-600');
+                muteIndicator.classList.remove('hidden');
+            } else {
+                icon.innerText = 'mic';
+                micBtn.classList.replace('bg-red-500', 'bg-gray-700');
+                micBtn.classList.replace('hover:bg-red-600', 'hover:bg-gray-600');
+                muteIndicator.classList.add('hidden');
+            }
+        });
+
+        // Toggle Cam (Visual only)
+        camBtn.addEventListener('click', () => {
+            const icon = camBtn.querySelector('span');
+            if(icon.innerText === 'videocam') {
+                icon.innerText = 'videocam_off';
+                camBtn.classList.replace('bg-gray-700', 'bg-red-500');
+            } else {
+                icon.innerText = 'videocam';
+                camBtn.classList.replace('bg-red-500', 'bg-gray-700');
+            }
+        });
+
+        // End Call Flow
+        endBtn.addEventListener('click', () => {
+            reviewModal.classList.remove('hidden');
+            // Little animation for modal
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 50);
+        });
+    </script>
+</body>
+</html>

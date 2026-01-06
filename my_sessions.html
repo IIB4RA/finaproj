@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>My Sessions - SkillSwap</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#3B82F6", "primary-hover": "#2563EB", "secondary": "#10B981",
+              "background-light": "#FAFAFA", "background-dark": "#111827",
+              "surface-light": "#FFFFFF", "surface-dark": "#1F2937",
+              "text-light": "#1F2937", "text-muted-light": "#6B7280",
+              "text-dark": "#F9FAFB", "text-muted-dark": "#9CA3AF",
+            },
+            fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
+          },
+        },
+      }
+    </script>
+    <style>
+        .filled { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased h-screen flex overflow-hidden selection:bg-primary/20">
+
+    <aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 hidden md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 cursor-pointer" onclick="window.location.href='landing_page.html'">
+            <div class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
+                <span class="material-symbols-outlined text-2xl">hub</span> SkillSwap
+            </div>
+        </div>
+
+        <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+            <a href="user_dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <a href="my_sessions.html" class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl font-semibold transition-colors">
+                <span class="material-symbols-outlined filled">calendar_month</span> My Sessions
+            </a>
+            <a href="user_profile.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">person</span> My Profile
+            </a>
+            <a href="skill_search.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">search</span> Find Skills
+            </a>
+            <a href="teach_skill.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">school</span> Teach a Skill
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200 dark:border-gray-800">
+             <div class="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer group">
+                <img id="sidebar-avatar" src="https://i.pravatar.cc/150" class="w-10 h-10 rounded-full object-cover border">
+                <div class="flex-1 overflow-hidden" onclick="window.location.href='user_profile.html'">
+                    <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">View Profile</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md z-10 shrink-0">
+            <h2 class="text-xl font-bold">My Sessions</h2>
+            <button id="logout-btn" class="p-2 text-text-muted-light hover:text-red-500 transition-colors"><span class="material-symbols-outlined">logout</span></button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
+            
+            <div class="flex gap-6 border-b border-gray-200 dark:border-gray-800">
+                <button onclick="switchTab('learning')" id="tab-learning" class="pb-3 border-b-2 border-primary text-primary font-bold text-sm transition-colors">Learning (Student)</button>
+                <button onclick="switchTab('teaching')" id="tab-teaching" class="pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-bold text-sm transition-colors">Teaching (Mentor)</button>
+            </div>
+
+            <div id="learning-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+
+            <div id="teaching-container" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+
+        </div>
+    </main>
+
+    <script>
+        let myId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            myId = localStorage.getItem('skillswap_temp_userid');
+            if (!myId) { window.location.href = 'login.html'; return; }
+            
+            loadSidebar();
+            await loadSessions();
+        });
+
+        async function loadSidebar() {
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/users/${myId}`);
+                const user = await res.json();
+                document.getElementById('sidebar-name').innerText = user.fullName;
+                if(user.profilePicture) document.getElementById('sidebar-avatar').src = user.profilePicture;
+            } catch(e) {}
+        }
+
+        async function loadSessions() {
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/bookings/user/${myId}`);
+                const bookings = await res.json();
+                
+                const learningContainer = document.getElementById('learning-container');
+                const teachingContainer = document.getElementById('teaching-container');
+                
+                learningContainer.innerHTML = '';
+                teachingContainer.innerHTML = '';
+
+                if (bookings.length === 0) {
+                    learningContainer.innerHTML = '<p class="text-gray-400">No sessions found.</p>';
+                    return;
+                }
+
+                bookings.forEach(b => {
+                    const isTeacher = (b.teacherId === myId);
+                    const otherName = isTeacher ? b.learnerName : b.teacherName;
+                    const roleLabel = isTeacher ? "Student" : "Mentor";
+                    const statusColor = getStatusColor(b.status);
+
+                    let actionBtn = "";
+                    
+                    // 1. Teacher Actions (Accept / Decline)
+                    if (isTeacher && b.status === 'pending') {
+                        actionBtn = `
+                            <div class="flex gap-2 mt-4">
+                                <button onclick="updateStatus('${b._id}', 'confirmed')" class="flex-1 bg-green-500 text-white py-2 rounded-xl text-xs font-bold hover:bg-green-600">Accept</button>
+                                <button onclick="updateStatus('${b._id}', 'cancelled')" class="flex-1 bg-red-50 text-red-500 py-2 rounded-xl text-xs font-bold hover:bg-red-100">Decline</button>
+                            </div>
+                        `;
+                    } 
+                    // 2. Confirmed Session (Join Button)
+                    else if (b.status === 'confirmed' || b.status === 'ready') {
+                        actionBtn = `
+                            <button onclick="joinSession('${b._id}', '${isTeacher ? 'teacher' : 'learner'}')" class="mt-4 w-full bg-primary text-white py-3 rounded-xl text-xs font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform flex justify-center items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">videocam</span> Join Now
+                            </button>
+                        `;
+                    }
+                    else if (b.status === 'completed') {
+                        actionBtn = `<div class="mt-4 w-full text-center text-gray-400 text-xs font-bold border py-2 rounded-xl">✓ Finished</div>`;
+                    }
+
+                    const cardHtml = `
+                        <div class="bg-white dark:bg-surface-dark p-6 rounded-[32px] shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">${b.date} • ${b.time}</span>
+                                    <h3 class="font-bold text-lg mt-1">${b.skill}</h3>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${statusColor}">${b.status}</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-2xl mb-2">
+                                <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                                    ${otherName.charAt(0)}
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-bold">${roleLabel}</p>
+                                    <p class="text-sm font-bold">${otherName}</p>
+                                </div>
+                            </div>
+                            ${actionBtn}
+                        </div>
+                    `;
+
+                    if (isTeacher) teachingContainer.innerHTML += cardHtml;
+                    else learningContainer.innerHTML += cardHtml;
+                });
+
+            } catch (err) { console.error(err); }
+        }
+
+        // FIXED: Better Error Handling
+        async function updateStatus(bookingId, newStatus) {
+            if (!confirm(`Are you sure you want to ${newStatus} this session?`)) return;
+
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/bookings/${bookingId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                // Always try to parse JSON to see the real error message
+                const data = await res.json();
+                
+                if (res.ok) {
+                    alert("✅ Success: Session " + newStatus);
+                    loadSessions(); 
+                } else {
+                    // Show the exact backend error (e.g. "Learner has insufficient credits")
+                    alert("❌ Error: " + (data.error || "Failed to update"));
+                }
+            } catch (e) {
+                console.error(e);
+                alert("⚠️ Network Error. Ensure Backend is running.");
+            }
+        }
+
+        function joinSession(bookingId, role) {
+            localStorage.setItem('current_booking_id', bookingId);
+            localStorage.setItem('current_user_role', role);
+            window.location.href = 'live_session.html';
+        }
+
+        function switchTab(tab) {
+            document.getElementById('learning-container').classList.add('hidden');
+            document.getElementById('teaching-container').classList.add('hidden');
+            document.getElementById('tab-learning').classList.replace('border-primary', 'border-transparent');
+            document.getElementById('tab-teaching').classList.replace('border-primary', 'border-transparent');
+            document.getElementById('tab-learning').classList.replace('text-primary', 'text-gray-500');
+            document.getElementById('tab-teaching').classList.replace('text-primary', 'text-gray-500');
+
+            document.getElementById(`${tab}-container`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).classList.replace('border-transparent', 'border-primary');
+            document.getElementById(`tab-${tab}`).classList.replace('text-gray-500', 'text-primary');
+        }
+
+        function getStatusColor(status) {
+            if(status === 'confirmed' || status === 'ready') return 'bg-green-100 text-green-600';
+            if(status === 'pending') return 'bg-amber-100 text-amber-600';
+            if(status === 'cancelled') return 'bg-red-100 text-red-600';
+            return 'bg-gray-100 text-gray-500';
+        }
+        
+        document.getElementById('logout-btn').onclick = () => { localStorage.clear(); window.location.href = 'login.html'; };
+    </script>
+</body>
+</html>

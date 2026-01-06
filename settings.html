@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SkillSwap - Account Settings</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#3B82F6", "primary-hover": "#2563EB", "secondary": "#10B981",
+              "background-light": "#FAFAFA", "background-dark": "#111827",
+              "surface-light": "#FFFFFF", "surface-dark": "#1F2937",
+              "text-light": "#1F2937", "text-muted-light": "#6B7280",
+              "text-dark": "#F9FAFB", "text-muted-dark": "#9CA3AF",
+            },
+            fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased h-screen flex overflow-hidden selection:bg-primary/20">
+
+    <aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 hidden md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 cursor-pointer" onclick="window.location.href='landing_page.html'">
+            <div class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
+                <span class="material-symbols-outlined text-2xl">hub</span> SkillSwap
+            </div>
+        </div>
+
+        <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+            <a href="user_dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <a href="user_profile.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">person</span> My Profile
+            </a>
+            <a href="skill_search.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">search</span> Find Skills
+            </a>
+            <a href="teach_skill.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">school</span> Teach a Skill
+            </a>
+            <div class="pt-4 pb-1 px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Community</div>
+            <a href="community.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">groups</span> Community
+            </a>
+            <a href="leaderboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">leaderboard</span> Leaderboard
+            </a>
+            <div class="pt-4 pb-1 px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Tools</div>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">chat</span> Messages
+            </a>
+            <a href="payment&reward_sys.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">account_balance_wallet</span> Wallet
+            </a>
+            <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl font-semibold transition-colors">
+                <span class="material-symbols-outlined filled">settings</span> Settings
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200 dark:border-gray-800">
+             <div class="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer group">
+                <div class="relative w-10 h-10">
+                    <img id="sidebar-avatar" src="https://i.pravatar.cc/150" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+                </div>
+                <div class="flex-1 overflow-hidden" onclick="window.location.href='user_profile.html'">
+                    <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">View Profile</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md z-10 shrink-0">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden p-2 text-text-muted-light hover:text-primary rounded-lg"><span class="material-symbols-outlined">menu</span></button>
+                <h2 class="text-xl font-bold hidden sm:block">Account Settings</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="logout-btn" class="p-2 text-text-muted-light hover:text-red-500 transition-colors" title="Logout"><span class="material-symbols-outlined">logout</span></button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 flex justify-center">
+            <div class="w-full max-w-3xl space-y-8">
+                
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight text-text-light dark:text-white">Account Management</h1>
+                    <p class="text-text-muted-light dark:text-text-muted-dark mt-1">Manage your login details and security preferences.</p>
+                </div>
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 dark:border-gray-800">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">person</span>
+                            General Information
+                        </h3>
+                    </div>
+                    <form id="general-form" class="p-6 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Full Name</label>
+                                <input type="text" id="setting-name" class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white dark:bg-background-dark p-3 focus:ring-2 focus:ring-primary focus:border-primary transition-all" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Email Address</label>
+                                <input type="email" id="setting-email" class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white dark:bg-background-dark p-3 focus:ring-2 focus:ring-primary focus:border-primary transition-all" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/30 flex items-center gap-2 transform active:scale-95">
+                                <span class="material-symbols-outlined text-sm">save</span>
+                                Update Info
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-surface-light dark:bg-surface-dark rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 dark:border-gray-800">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">lock</span>
+                            Security
+                        </h3>
+                    </div>
+                    <form id="password-form" class="p-6 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">New Password</label>
+                                <input type="password" id="new-password" class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white dark:bg-background-dark p-3 focus:ring-2 focus:ring-primary focus:border-primary" placeholder="••••••••" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2">Confirm Password</label>
+                                <input type="password" id="confirm-password" class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white dark:bg-background-dark p-3 focus:ring-2 focus:ring-primary focus:border-primary" placeholder="••••••••" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2.5 bg-slate-900 dark:bg-white dark:text-slate-900 text-white font-bold rounded-xl transition-all shadow-lg flex items-center gap-2 transform active:scale-95">
+                                <span class="material-symbols-outlined text-sm">key</span>
+                                Change Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-red-50 dark:bg-red-900/10 rounded-3xl p-8 border border-red-100 dark:border-red-900/30 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
+                            <span class="material-symbols-outlined">warning</span>
+                            Danger Zone
+                        </h3>
+                        <p class="text-sm text-red-500/80 mt-1">Permanently delete your account and all of your content.</p>
+                    </div>
+                    <button id="delete-btn" class="px-6 py-2.5 bg-white dark:bg-transparent border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 font-bold rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shadow-sm">
+                        Delete Account
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Auth Check (Robust)
+            let userId = localStorage.getItem('skillswap_temp_userid');
+            if (!userId) {
+                const userObj = localStorage.getItem('skillswap_user');
+                if (userObj) {
+                    try { userId = JSON.parse(userObj).userId; } catch(e){}
+                }
+            }
+            if (!userId) { 
+                console.warn("No User ID found, redirecting to login.");
+                window.location.href = 'login.html'; 
+                return; 
+            }
+            
+            console.log("Logged in with User ID:", userId);
+
+            // 2. Load User Data
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/users/${userId}`);
+                if (!response.ok) throw new Error("Failed to fetch user data");
+                const user = await response.json();
+
+                // Sidebar
+                document.getElementById('sidebar-name').innerText = user.fullName;
+                if(user.profilePicture) document.getElementById('sidebar-avatar').src = user.profilePicture;
+
+                // Populate Fields (Editable)
+                document.getElementById('setting-name').value = user.fullName || "";
+                document.getElementById('setting-email').value = user.email || "";
+
+            } catch (err) { console.error("Error loading user data:", err); }
+
+            // 3. Update General Info (Name & Email)
+            document.getElementById('general-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fullName = document.getElementById('setting-name').value;
+                const email = document.getElementById('setting-email').value;
+
+                console.log("Updating Info:", { fullName, email });
+
+                try {
+                    const res = await fetch(`http://127.0.0.1:5000/api/users/${userId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fullName, email })
+                    });
+                    const data = await res.json();
+                    
+                    if(res.ok) {
+                        alert("Account info updated successfully!");
+                        // Update UI immediately
+                        document.getElementById('sidebar-name').innerText = fullName; 
+                    } else {
+                        alert(data.error || "Update failed.");
+                    }
+                } catch(err) { 
+                    console.error(err);
+                    alert("Error connecting to server."); 
+                }
+            });
+
+            // 4. Update Password
+            document.getElementById('password-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const password = document.getElementById('new-password').value;
+                const confirm = document.getElementById('confirm-password').value;
+
+                if (password !== confirm) {
+                    alert("Passwords do not match!");
+                    return;
+                }
+
+                console.log("Updating Password...");
+
+                try {
+                    const res = await fetch(`http://127.0.0.1:5000/api/users/${userId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password })
+                    });
+                    
+                    if(res.ok) {
+                        alert("Password changed successfully! Please login with your new password.");
+                        document.getElementById('password-form').reset();
+                    } else { alert("Failed to change password."); }
+                } catch(err) { 
+                    console.error(err);
+                    alert("Error connecting to server."); 
+                }
+            });
+
+            // 5. Delete Account
+            document.getElementById('delete-btn').addEventListener('click', async () => {
+                if(confirm("Are you sure? This action CANNOT be undone.")) {
+                    console.log("Deleting account...");
+                    try {
+                        const res = await fetch(`http://127.0.0.1:5000/api/users/${userId}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        if(res.ok) {
+                            alert("Account deleted.");
+                            localStorage.clear();
+                            window.location.href = 'signup.html';
+                        } else { alert("Failed to delete account."); }
+                    } catch(err) { 
+                        console.error(err);
+                        alert("Error connecting to server."); 
+                    }
+                }
+            });
+
+            // 6. Logout
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                if(confirm('Log out?')) {
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

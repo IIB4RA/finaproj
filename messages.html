@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Messages - SkillSwap</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#3B82F6", "primary-hover": "#2563EB", "secondary": "#10B981",
+              "background-light": "#FAFAFA", "background-dark": "#111827",
+              "surface-light": "#FFFFFF", "surface-dark": "#1F2937",
+              "text-light": "#1F2937", "text-muted-light": "#6B7280",
+              "text-dark": "#F9FAFB", "text-muted-dark": "#9CA3AF",
+            },
+            fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
+          },
+        },
+      }
+    </script>
+    <style>
+        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 20px; }
+        .dark .chat-scroll::-webkit-scrollbar-thumb { background-color: #374151; }
+        .filled { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased h-screen flex overflow-hidden selection:bg-primary/20">
+
+    <aside class="w-20 lg:w-64 bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 z-20 flex-shrink-0">
+        <div class="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-gray-200 dark:border-gray-800 cursor-pointer" onclick="window.location.href='landing_page.html'">
+            <div class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
+                <span class="material-symbols-outlined text-2xl">hub</span> <span class="hidden lg:inline">SkillSwap</span>
+            </div>
+        </div>
+
+        <nav class="flex-1 py-6 px-2 lg:px-3 space-y-1 overflow-y-auto">
+            <a href="user_dashboard.html" class="flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">dashboard</span> <span class="hidden lg:inline">Dashboard</span>
+            </a>
+            <a href="my_sessions.html" class="flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">calendar_month</span> <span class="hidden lg:inline">My Sessions</span>
+            </a>
+            <a href="user_profile.html" class="flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">person</span> <span class="hidden lg:inline">My Profile</span>
+            </a>
+            <a href="#" class="flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl font-semibold transition-colors">
+                <span class="material-symbols-outlined filled">chat</span> <span class="hidden lg:inline">Messages</span>
+            </a>
+            <a href="skill_search.html" class="flex items-center justify-center lg:justify-start gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">search</span> <span class="hidden lg:inline">Find Skills</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 flex h-screen overflow-hidden relative bg-white dark:bg-black">
+        
+        <div class="w-full md:w-80 border-r border-gray-200 dark:border-gray-800 flex flex-col bg-surface-light dark:bg-surface-dark shrink-0" id="contacts-panel">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Messages</h2>
+                    <button onclick="loadContacts()" class="text-primary hover:rotate-180 transition-transform duration-500"><span class="material-symbols-outlined text-sm">refresh</span></button>
+                </div>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><span class="material-symbols-outlined text-sm">search</span></span>
+                    <input type="text" id="contact-search" placeholder="Search chats..." class="w-full pl-9 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary">
+                </div>
+            </div>
+            
+            <div id="contacts-list" class="flex-1 overflow-y-auto p-2 space-y-1 chat-scroll">
+                <div class="text-center py-10 text-gray-500 text-sm">Loading contacts...</div>
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col h-full bg-gray-50 dark:bg-gray-950 hidden md:flex" id="chat-panel">
+            
+            <div id="chat-header" class="h-16 px-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between bg-surface-light dark:bg-surface-dark hidden">
+                <div class="flex items-center gap-3">
+                    <button class="md:hidden p-2 -ml-2 text-gray-500" onclick="showContacts()"><span class="material-symbols-outlined">arrow_back</span></button>
+                    <img id="header-avatar" src="" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                    <div>
+                        <h3 id="header-name" class="font-bold text-sm text-text-light dark:text-white">User</h3>
+                        <p class="text-[10px] text-green-500 font-bold uppercase tracking-wider">Online Now</p>
+                    </div>
+                </div>
+                <button class="p-2 text-gray-400 hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>
+            </div>
+
+            <div id="empty-state" class="flex-1 flex flex-col items-center justify-center text-center p-8">
+                <div class="w-32 h-32 bg-gray-200 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-6xl text-gray-400">forum</span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-700 dark:text-gray-300">Your Conversations</h2>
+                <p class="text-gray-500 mt-2">Pick a contact from the left to start chatting.</p>
+            </div>
+
+            <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-4 chat-scroll hidden"></div>
+
+            <div id="input-area" class="p-4 bg-surface-light dark:bg-surface-dark border-t border-gray-200 dark:border-gray-800 hidden">
+                <form id="message-form" class="flex items-center gap-2">
+                    <input type="text" id="message-input" class="flex-1 bg-gray-100 dark:bg-gray-800 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary placeholder-gray-500 dark:text-white" placeholder="Type your message here..." autocomplete="off">
+                    <button type="submit" class="p-3 bg-primary hover:bg-primary-hover text-white rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center justify-center">
+                        <span class="material-symbols-outlined filled">send</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let myId = null;
+        let activeContactId = null;
+        let pollingInterval = null;
+        let lastMessageCount = 0;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            myId = localStorage.getItem('skillswap_temp_userid');
+            if (!myId) { window.location.href = 'login.html'; return; }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetContact = urlParams.get('contact');
+
+            await loadContacts();
+
+            if (targetContact) {
+                openChat(targetContact); 
+            }
+
+            // Message Sending Logic
+            document.getElementById('message-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const input = document.getElementById('message-input');
+                const text = input.value.trim();
+                if(!text || !activeContactId) return;
+
+                // Optimistic UI: Append locally before server confirms
+                appendMessage({ 
+                    text: text, 
+                    senderId: myId, 
+                    timestamp: new Date().toISOString() 
+                }, true); // true = scroll to bottom
+                
+                input.value = '';
+
+                try {
+                    await fetch('http://127.0.0.1:5000/api/messages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ senderId: myId, receiverId: activeContactId, text: text })
+                    });
+                    // Refresh contact list to show latest message preview
+                    loadContacts(); 
+                } catch(err) { console.error("Send failed", err); }
+            });
+        });
+
+        async function loadContacts() {
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/messages/contacts/${myId}`);
+                const contacts = await res.json();
+                const list = document.getElementById('contacts-list');
+                list.innerHTML = '';
+
+                if(contacts.length === 0) {
+                    list.innerHTML = `<div class="text-center py-10 text-gray-500 text-sm">No active chats.<br>Message a mentor from their profile!</div>`;
+                    return;
+                }
+
+                contacts.forEach(user => {
+                    const isActive = (user._id === activeContactId);
+                    list.innerHTML += `
+                    <div onclick="openChat('${user._id}', '${user.fullName}', '${user.profilePicture}')" 
+                         class="group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${isActive ? 'bg-primary/10 border-l-4 border-primary' : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'}">
+                        <div class="relative shrink-0">
+                            <img src="${user.profilePicture || 'https://i.pravatar.cc/150'}" class="w-12 h-12 rounded-full object-cover border border-gray-100 dark:border-gray-800">
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-surface-dark rounded-full"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-sm truncate ${isActive ? 'text-primary' : 'text-text-light dark:text-white'}">${user.fullName}</h4>
+                            </div>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">${user.headline || 'Skill Expert'}</p>
+                        </div>
+                    </div>`;
+                });
+            } catch(err) { console.error("Contacts load error", err); }
+        }
+
+        async function openChat(userId, name, pic) {
+            activeContactId = userId;
+            
+            // Fetch missing info if opened via direct URL
+            if(!name) {
+                try {
+                    const res = await fetch(`http://127.0.0.1:5000/api/users/${userId}`);
+                    const user = await res.json();
+                    name = user.fullName; pic = user.profilePicture;
+                } catch(e) {}
+            }
+
+            // UI Transitions
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('chat-header').classList.remove('hidden');
+            document.getElementById('messages-container').classList.remove('hidden');
+            document.getElementById('input-area').classList.remove('hidden');
+            document.getElementById('chat-panel').classList.remove('hidden');
+            if(window.innerWidth < 768) document.getElementById('contacts-panel').classList.add('hidden');
+
+            document.getElementById('header-name').innerText = name || "User";
+            document.getElementById('header-avatar').src = pic || "https://i.pravatar.cc/150";
+
+            // Mark as Read
+            await fetch(`http://127.0.0.1:5000/api/messages/mark-read/${myId}/${userId}`, { method: 'PUT' });
+
+            loadMessages(true); // Initial load with scroll
+            
+            if(pollingInterval) clearInterval(pollingInterval);
+            pollingInterval = setInterval(() => loadMessages(false), 3000); 
+        }
+
+        async function loadMessages(shouldScroll) {
+            if(!activeContactId) return;
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/messages/${myId}/${activeContactId}`);
+                const messages = await res.json();
+                
+                // Only re-render if there are new messages to avoid flickering
+                if(messages.length !== lastMessageCount) {
+                    const container = document.getElementById('messages-container');
+                    container.innerHTML = '';
+                    messages.forEach(msg => appendMessage(msg, false));
+                    container.scrollTop = container.scrollHeight;
+                    lastMessageCount = messages.length;
+                }
+            } catch(err) { console.error("Msg load error", err); }
+        }
+
+        function appendMessage(msg, scroll) {
+            const container = document.getElementById('messages-container');
+            const isMe = (msg.senderId === myId);
+            const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            const msgHtml = `
+            <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} animate-fade-in">
+                <div class="${isMe ? 'bg-primary text-white rounded-br-none' : 'bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-bl-none'} px-4 py-2.5 rounded-2xl max-w-[75%] shadow-sm text-sm break-words">
+                    ${msg.text}
+                </div>
+                <span class="text-[9px] text-gray-400 mt-1 uppercase font-bold tracking-widest px-1">${time}</span>
+            </div>`;
+            
+            container.insertAdjacentHTML('beforeend', msgHtml);
+            if(scroll) container.scrollTop = container.scrollHeight;
+        }
+
+        window.showContacts = () => {
+            document.getElementById('contacts-panel').classList.remove('hidden');
+            document.getElementById('chat-panel').classList.add('hidden');
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Wallet - SkillSwap</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#3B82F6", "primary-hover": "#2563EB", "secondary": "#10B981",
+              "background-light": "#FAFAFA", "background-dark": "#111827",
+              "surface-light": "#FFFFFF", "surface-dark": "#1F2937",
+              "text-light": "#1F2937", "text-muted-light": "#6B7280",
+              "text-dark": "#F9FAFB", "text-muted-dark": "#9CA3AF",
+            },
+            fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased h-screen flex overflow-hidden selection:bg-primary/20">
+
+    <aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 hidden md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 cursor-pointer" onclick="window.location.href='landing_page.html'">
+            <div class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
+                <span class="material-symbols-outlined text-2xl">hub</span> SkillSwap
+            </div>
+        </div>
+
+        <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+            <a href="user_dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <a href="user_profile.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">person</span> My Profile
+            </a>
+            <a href="skill_search.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">search</span> Find Skills
+            </a>
+            <a href="teach_skill.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">school</span> Teach a Skill
+            </a>
+            <a href="community.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">groups</span> Community
+            </a>
+            <a href="leaderboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">leaderboard</span> Leaderboard
+            </a>
+            <div class="pt-4 pb-1 px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Tools</div>
+            <a href="messages.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">chat</span> Messages
+            </a>
+            <a href="payment&reward_sys.html" class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl font-semibold transition-colors">
+                <span class="material-symbols-outlined filled">account_balance_wallet</span> Wallet
+            </a>
+            <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">settings</span> Settings
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200 dark:border-gray-800">
+             <div class="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer" onclick="window.location.href='user_profile.html'">
+                <img id="sidebar-avatar" src="https://i.pravatar.cc/150" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                <div class="flex-1 overflow-hidden">
+                    <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                    <p class="text-xs text-text-muted-light truncate">View Profile</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md z-10 shrink-0">
+            <h2 class="text-xl font-bold">My Wallet</h2>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 px-3 py-1.5 rounded-full border border-green-100">
+                    <span class="material-symbols-outlined text-green-600">payments</span>
+                    <span id="header-balance" class="font-bold text-green-700 dark:text-green-300">0</span>
+                </div>
+                <button id="logout-btn" class="p-2 text-text-muted-light hover:text-red-500"><span class="material-symbols-outlined">logout</span></button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8">
+            
+            <div class="max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-[32px] p-8 text-white shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[240px]">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+                        <div class="flex justify-between items-start z-10">
+                            <div>
+                                <p class="text-gray-400 text-sm mb-1 uppercase tracking-widest">Available Balance</p>
+                                <h1 class="text-5xl font-black flex items-center gap-3">
+                                    <span id="card-balance">0</span> <span class="text-lg opacity-40 font-normal">Credits</span>
+                                </h1>
+                            </div>
+                            <span class="material-symbols-outlined text-5xl opacity-20">sensors</span>
+                        </div>
+                        <div class="z-10 flex justify-between items-end">
+                            <div>
+                                <p class="text-gray-500 text-[10px] uppercase tracking-widest mb-1">Card Holder</p>
+                                <p id="card-holder" class="font-bold text-lg tracking-widest uppercase">LOADING...</p>
+                            </div>
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-10 filter grayscale brightness-200">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div onclick="document.getElementById('topup-section').scrollIntoView({behavior: 'smooth'})" class="bg-white dark:bg-surface-dark p-6 rounded-[24px] border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all group">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-primary">add_card</span></div>
+                            <span class="font-bold text-sm">Top Up</span>
+                        </div>
+                        <div id="rewards-btn" class="bg-white dark:bg-surface-dark p-6 rounded-[24px] border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all group opacity-50">
+                            <div class="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-purple-500">redeem</span></div>
+                            <span class="font-bold text-sm">Rewards</span>
+                        </div>
+                        <div onclick="document.getElementById('history-section').scrollIntoView({behavior: 'smooth'})" class="bg-white dark:bg-surface-dark p-6 rounded-[24px] border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all group">
+                            <div class="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-green-500">history</span></div>
+                            <span class="font-bold text-sm">History</span>
+                        </div>
+                        <div onclick="openTransferModal()" class="bg-white dark:bg-surface-dark p-6 rounded-[24px] border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center gap-3 cursor-pointer hover:shadow-xl transition-all group">
+                            <div class="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-amber-500">send</span></div>
+                            <span class="font-bold text-sm">Transfer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="topup-section" class="mb-12">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><span class="material-symbols-outlined text-primary">shopping_cart</span> Buy Skill Credits</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="bg-white dark:bg-surface-dark p-8 rounded-3xl border border-gray-100 dark:border-gray-800 text-center hover:border-primary transition-all">
+                            <h2 class="text-4xl font-black text-primary mb-2">50</h2>
+                            <p class="text-gray-400 mb-6 text-sm">Starter Pack</p>
+                            <button onclick="updateBalance(50, 'Credit Purchase - Starter')" class="w-full py-3 bg-gray-50 dark:bg-gray-800 hover:bg-primary hover:text-white rounded-2xl font-bold transition-all">Buy for $5</button>
+                        </div>
+                        <div class="bg-white dark:bg-surface-dark p-8 rounded-3xl border-2 border-primary text-center relative shadow-2xl shadow-primary/10">
+                            <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-tighter">Best Value</span>
+                            <h2 class="text-4xl font-black text-primary mb-2">120</h2>
+                            <p class="text-gray-400 mb-6 text-sm">Swap Master</p>
+                            <button onclick="updateBalance(120, 'Credit Purchase - Master')" class="w-full py-3 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-hover transition-all">Buy for $10</button>
+                        </div>
+                        <div class="bg-white dark:bg-surface-dark p-8 rounded-3xl border border-gray-100 dark:border-gray-800 text-center hover:border-primary transition-all">
+                            <h2 class="text-4xl font-black text-primary mb-2">500</h2>
+                            <p class="text-gray-400 mb-6 text-sm">Organization</p>
+                            <button onclick="updateBalance(500, 'Credit Purchase - Org')" class="w-full py-3 bg-gray-50 dark:bg-gray-800 hover:bg-primary hover:text-white rounded-2xl font-bold transition-all">Buy for $40</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="history-section">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2"><span class="material-symbols-outlined text-gray-400">history</span> Activity Log</h3>
+                    <div class="bg-white dark:bg-surface-dark rounded-[32px] border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50 dark:bg-gray-800/50 text-[10px] font-black text-gray-500 uppercase tracking-widest">
+                                <tr>
+                                    <th class="px-8 py-5">Activity Details</th>
+                                    <th class="px-8 py-5">Date</th>
+                                    <th class="px-8 py-5 text-right">Credit Delta</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-list" class="divide-y divide-gray-50 dark:divide-gray-800">
+                                <tr><td colspan="3" class="px-8 py-10 text-center text-gray-400">Loading history...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="transfer-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+        <div class="bg-white dark:bg-surface-dark w-full max-w-md rounded-[32px] p-8 shadow-2xl border border-gray-100 dark:border-gray-800">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-2xl font-black">Send Credits</h3>
+                <button onclick="closeTransferModal()" class="text-gray-400 hover:text-gray-600"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form id="transfer-form" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-2 ml-1">Recipient Email</label>
+                    <input type="email" id="transfer-email" class="w-full rounded-2xl border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 focus:ring-2 focus:ring-primary outline-none dark:text-white" required placeholder="friend@example.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-2 ml-1">Credits Amount</label>
+                    <input type="number" id="transfer-amount" class="w-full rounded-2xl border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 focus:ring-2 focus:ring-primary outline-none dark:text-white" required min="1">
+                </div>
+                <div class="pt-4">
+                    <button type="submit" id="transfer-btn" class="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-2xl shadow-xl shadow-amber-200 dark:shadow-none transition-all active:scale-95">Send Credits Instantly</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let userId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            userId = localStorage.getItem('skillswap_temp_userid');
+            if (!userId) { window.location.href = 'login.html'; return; }
+
+            await loadWalletData();
+            await loadHistory();
+
+            // Transfer Logic
+            document.getElementById('transfer-form').onsubmit = async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('transfer-btn');
+                const email = document.getElementById('transfer-email').value;
+                const amount = parseInt(document.getElementById('transfer-amount').value);
+
+                btn.innerText = "Processing...";
+                btn.disabled = true;
+
+                try {
+                    const res = await fetch('http://127.0.0.1:5000/api/wallet/transfer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ senderId: userId, recipientEmail: email, amount: amount })
+                    });
+                    const data = await res.json();
+                    
+                    if(res.ok) {
+                        alert("✅ Transfer Successful!");
+                        closeTransferModal();
+                        await loadWalletData();
+                        await loadHistory();
+                    } else { alert("❌ Error: " + data.error); }
+                } catch (err) { alert("Server connection failed."); }
+                finally {
+                    btn.innerText = "Send Credits Instantly";
+                    btn.disabled = false;
+                }
+            };
+        });
+
+        async function loadWalletData() {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/users/${userId}`);
+                const user = await response.json();
+                
+                if(response.ok) {
+                    document.getElementById('sidebar-name').innerText = user.fullName;
+                    document.getElementById('card-holder').innerText = user.fullName.toUpperCase();
+                    document.getElementById('card-balance').innerText = user.creditBalance || 0;
+                    document.getElementById('header-balance').innerText = user.creditBalance || 0;
+                    if(user.profilePicture) document.getElementById('sidebar-avatar').src = user.profilePicture;
+                    
+                    // CRITICAL SYNC: Ensure booking guard has latest credits
+                    localStorage.setItem('userCredits', user.creditBalance || 0);
+                }
+            } catch (e) { console.error("Wallet data load error", e); }
+        }
+
+        async function loadHistory() {
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/wallet/history/${userId}`);
+                const history = await res.json();
+                const list = document.getElementById('history-list');
+                list.innerHTML = '';
+
+                if(!history || history.length === 0) {
+                    list.innerHTML = '<tr><td colspan="3" class="px-8 py-10 text-center text-gray-400 text-sm font-medium italic">No transactions found. Start swapping skills!</td></tr>';
+                    return;
+                }
+
+                history.forEach(item => {
+                    const isPlus = item.amount > 0;
+                    list.innerHTML += `
+                    <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center ${isPlus ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}">
+                                    <span class="material-symbols-outlined text-sm">${isPlus ? 'arrow_downward' : 'arrow_upward'}</span>
+                                </div>
+                                <span class="font-bold text-sm dark:text-gray-200">${item.description}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-xs text-gray-400 font-medium">${item.date}</td>
+                        <td class="px-8 py-5 text-right font-black text-sm ${isPlus ? 'text-green-500' : 'text-red-500'}">
+                            ${isPlus ? '+' : ''}${item.amount} Cr
+                        </td>
+                    </tr>`;
+                });
+            } catch(e) { console.error("History load failed", e); }
+        }
+
+        window.updateBalance = async (amount, desc) => {
+            if(!confirm(`Confirm purchase of ${amount} credits?`)) return;
+            
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/wallet/update`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: userId, amount: amount, description: desc })
+                });
+                if (res.ok) { 
+                    alert("✅ Purchase complete!");
+                    await loadWalletData(); 
+                    await loadHistory(); 
+                }
+            } catch(e) { alert("Purchase failed."); }
+        };
+
+        window.openTransferModal = () => document.getElementById('transfer-modal').classList.remove('hidden');
+        window.closeTransferModal = () => document.getElementById('transfer-modal').classList.add('hidden');
+
+        document.getElementById('logout-btn').onclick = () => {
+            if(confirm("Log out?")) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        };
+    </script>
+</body>
+</html>

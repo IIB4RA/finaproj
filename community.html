@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Community - SkillSwap</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#3B82F6", "primary-hover": "#2563EB", "secondary": "#10B981",
+              "background-light": "#FAFAFA", "background-dark": "#111827",
+              "surface-light": "#FFFFFF", "surface-dark": "#1F2937",
+              "text-light": "#1F2937", "text-muted-light": "#6B7280",
+              "text-dark": "#F9FAFB", "text-muted-dark": "#9CA3AF",
+            },
+            fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased h-screen flex overflow-hidden selection:bg-primary/20">
+
+    <aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 hidden md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 cursor-pointer" onclick="window.location.href='landing_page.html'">
+            <div class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
+                <span class="material-symbols-outlined text-2xl">hub</span> SkillSwap
+            </div>
+        </div>
+
+        <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+            <a href="user_dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <a href="user_profile.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">person</span> My Profile
+            </a>
+            <a href="skill_search.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">search</span> Find Skills
+            </a>
+            <a href="teach_skill.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">school</span> Teach a Skill
+            </a>
+            <a href="community.html" class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl font-semibold transition-colors">
+                <span class="material-symbols-outlined filled">groups</span> Community
+            </a>
+            <a href="leaderboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">leaderboard</span> Leaderboard
+            </a>
+            <div class="pt-4 pb-1 px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Tools</div>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">chat</span> Messages
+            </a>
+            <a href="payment&reward_sys.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">account_balance_wallet</span> Wallet
+            </a>
+            <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">settings</span> Settings
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200 dark:border-gray-800">
+             <div class="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer group">
+                <div class="relative w-10 h-10">
+                    <img id="sidebar-avatar" src="https://i.pravatar.cc/150" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+                </div>
+                <div class="flex-1 overflow-hidden" onclick="window.location.href='user_profile.html'">
+                    <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">View Profile</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md z-10 shrink-0">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden p-2 text-text-muted-light hover:text-primary rounded-lg"><span class="material-symbols-outlined">menu</span></button>
+                <h2 class="text-xl font-bold hidden sm:block">Community Forum</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="openPostModal()" class="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">add</span> New Post
+                </button>
+                <button id="logout-btn" class="p-2 text-text-muted-light hover:text-red-500 transition-colors" title="Logout"><span class="material-symbols-outlined">logout</span></button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col lg:flex-row gap-8">
+            
+            <div class="flex-1 space-y-6">
+                <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar" id="topics-container">
+                    <button onclick="filterTopic('All Topics')" class="px-4 py-1.5 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm font-bold whitespace-nowrap transition-colors topic-btn">All Topics</button>
+                    <button onclick="filterTopic('Development')" class="px-4 py-1.5 bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-700 whitespace-nowrap transition-colors topic-btn">Development</button>
+                    <button onclick="filterTopic('Design')" class="px-4 py-1.5 bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-700 whitespace-nowrap transition-colors topic-btn">Design</button>
+                    <button onclick="filterTopic('Career Advice')" class="px-4 py-1.5 bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-700 whitespace-nowrap transition-colors topic-btn">Career Advice</button>
+                </div>
+
+                <div id="posts-container" class="space-y-6">
+                    <div class="text-center py-10 text-gray-500">Loading posts...</div>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-80 space-y-6">
+                <div class="bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl p-6 text-white shadow-lg">
+                    <h3 class="text-xl font-bold mb-2">Weekly Challenge</h3>
+                    <p class="text-sm opacity-90 mb-4">Post a helpful tip to earn the "Contributor" badge.</p>
+                </div>
+                <div class="bg-surface-light dark:bg-surface-dark rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
+                    <h3 class="font-bold mb-4">Trending Skills 🔥</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm"><span>1. Python</span><span class="text-green-500">+12%</span></div>
+                        <div class="flex justify-between text-sm"><span>2. React</span><span class="text-green-500">+8%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="post-modal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex justify-center items-center p-4">
+        <div class="bg-white dark:bg-surface-dark w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">Create New Post</h3>
+                <button onclick="closePostModal()" class="text-gray-500 hover:text-gray-700"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form id="create-post-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-1">Title</label>
+                    <input type="text" id="post-title" class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-background-dark p-2" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">Topic</label>
+                    <select id="post-topic" class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-background-dark p-2">
+                        <option>Development</option>
+                        <option>Design</option>
+                        <option>Career Advice</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">Content</label>
+                    <textarea id="post-content" rows="4" class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-background-dark p-2" required></textarea>
+                </div>
+                <div class="pt-4 flex justify-end gap-3">
+                    <button type="button" onclick="closePostModal()" class="px-4 py-2 text-sm font-semibold hover:bg-gray-100 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-6 py-2 text-sm font-bold text-white bg-primary hover:bg-primary-hover rounded-lg">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentUserId = null;
+        let currentUserFullName = "User";
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Auth & Sidebar
+            let userId = localStorage.getItem('skillswap_temp_userid');
+            if (!userId) {
+                const userObj = localStorage.getItem('skillswap_user');
+                if (userObj) try { userId = JSON.parse(userObj).userId; } catch(e){}
+            }
+            if (!userId) { window.location.href = 'login.html'; return; }
+            currentUserId = userId;
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/users/${userId}`);
+                const user = await response.json();
+                currentUserFullName = user.fullName;
+                document.getElementById('sidebar-name').innerText = user.fullName;
+                if(user.profilePicture) document.getElementById('sidebar-avatar').src = user.profilePicture;
+            } catch (err) { console.error(err); }
+
+            // 2. Load Posts (Initial)
+            loadPosts("All Topics");
+
+            // 3. New Post Logic
+            const postForm = document.getElementById('create-post-form');
+            postForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const title = document.getElementById('post-title').value;
+                const topic = document.getElementById('post-topic').value;
+                const content = document.getElementById('post-content').value;
+
+                try {
+                    const res = await fetch('http://127.0.0.1:5000/api/posts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: currentUserId, title, topic, content })
+                    });
+                    if(res.ok) {
+                        closePostModal();
+                        postForm.reset();
+                        loadPosts("All Topics"); // Refresh feed
+                    }
+                } catch(err) { alert("Error posting"); }
+            });
+
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                if(confirm('Log out?')) { localStorage.clear(); window.location.href = 'login.html'; }
+            });
+        });
+
+        // --- GLOBAL FUNCTIONS ---
+
+        async function loadPosts(topic) {
+            const container = document.getElementById('posts-container');
+            container.innerHTML = `<div class="text-center py-10"><span class="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span></div>`;
+
+            try {
+                let url = 'http://127.0.0.1:5000/api/posts';
+                if(topic && topic !== "All Topics") url += `?topic=${encodeURIComponent(topic)}`;
+
+                const res = await fetch(url);
+                const posts = await res.json();
+
+                container.innerHTML = '';
+                if(posts.length === 0) {
+                    container.innerHTML = `<div class="text-center py-10 text-gray-500">No posts yet in ${topic}. Be the first!</div>`;
+                    return;
+                }
+
+                posts.forEach(post => {
+                    const html = `
+                    <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm hover:border-primary/30 transition-colors">
+                        <div class="flex items-center gap-3 mb-4">
+                            <img src="${post.authorPic}" class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 object-cover">
+                            <div>
+                                <h3 class="font-bold text-sm text-text-light dark:text-white">${post.authorName}</h3>
+                                <p class="text-xs text-text-muted-light dark:text-text-muted-dark">${new Date(post.createdAt).toLocaleDateString()} • ${post.topic}</p>
+                            </div>
+                        </div>
+                        <h2 class="text-lg font-bold mb-2 text-text-light dark:text-white">${post.title}</h2>
+                        <p class="text-text-muted-light dark:text-text-muted-dark text-sm mb-4 leading-relaxed">${post.content}</p>
+                        
+                        <div id="comments-section-${post._id}" class="hidden mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                            <div id="comments-list-${post._id}" class="space-y-2 mb-3">
+                                ${post.comments.map(c => `<div class="bg-gray-50 dark:bg-gray-800 p-2 rounded text-xs"><span class="font-bold">${c.authorName}:</span> ${c.text}</div>`).join('')}
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="text" id="comment-input-${post._id}" class="flex-1 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-background-dark text-xs p-2" placeholder="Write a comment...">
+                                <button onclick="addComment('${post._id}')" class="px-3 py-1 bg-primary text-white text-xs font-bold rounded-lg">Send</button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 text-text-muted-light dark:text-text-muted-dark text-sm mt-4">
+                            <button onclick="likePost('${post._id}')" class="flex items-center gap-1 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-lg">thumb_up</span> <span id="likes-count-${post._id}">${post.likes}</span>
+                            </button>
+                            <button onclick="toggleComments('${post._id}')" class="flex items-center gap-1 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-lg">chat_bubble</span> ${post.comments.length} Comments
+                            </button>
+                        </div>
+                    </div>`;
+                    container.innerHTML += html;
+                });
+            } catch(err) { console.error(err); }
+        }
+
+        async function likePost(postId) {
+            try {
+                await fetch(`http://127.0.0.1:5000/api/posts/${postId}/like`, { method: 'PUT' });
+                // Simple Optimistic UI update
+                const el = document.getElementById(`likes-count-${postId}`);
+                el.innerText = parseInt(el.innerText) + 1;
+            } catch(e){}
+        }
+
+        function toggleComments(postId) {
+            const section = document.getElementById(`comments-section-${postId}`);
+            section.classList.toggle('hidden');
+        }
+
+        async function addComment(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const text = input.value.trim();
+            if(!text) return;
+
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/posts/${postId}/comment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ authorName: currentUserFullName, text })
+                });
+                if(res.ok) {
+                    // Refresh posts to show comment (easier than appending manually)
+                    const activeBtn = document.querySelector('.topic-btn.bg-black') || {innerText: "All Topics"};
+                    loadPosts(activeBtn.innerText); 
+                }
+            } catch(e){}
+        }
+
+        function filterTopic(topic) {
+            // Update active button UI
+            document.querySelectorAll('.topic-btn').forEach(btn => {
+                if(btn.innerText === topic) {
+                    btn.classList.remove('bg-gray-200', 'dark:bg-gray-800', 'text-gray-600');
+                    btn.classList.add('bg-black', 'dark:bg-white', 'text-white', 'dark:text-black');
+                } else {
+                    btn.classList.add('bg-gray-200', 'dark:bg-gray-800', 'text-gray-600');
+                    btn.classList.remove('bg-black', 'dark:bg-white', 'text-white', 'dark:text-black');
+                }
+            });
+            loadPosts(topic);
+        }
+
+        function openPostModal() { document.getElementById('post-modal').classList.remove('hidden'); }
+        function closePostModal() { document.getElementById('post-modal').classList.add('hidden'); }
+        async function checkGlobalNotifications() {
+    const userId = localStorage.getItem('skillswap_temp_userid');
+    if(!userId) return;
+
+    try {
+        const res = await fetch(`http://127.0.0.1:5000/api/messages/unread-count/${userId}`);
+        const data = await res.json();
+        
+        // ابحث عن أيقونة الرسائل في النافبار
+        const msgLinks = document.querySelectorAll('a[href="messages.html"]');
+        
+        msgLinks.forEach(link => {
+            let dot = link.querySelector('.notif-dot');
+            if (data.unreadCount > 0) {
+                if (!dot) {
+                    dot = document.createElement('span');
+                    dot.className = 'notif-dot absolute right-2 top-2 w-2 h-2 bg-red-500 rounded-full border border-white';
+                    link.classList.add('relative');
+                    link.appendChild(dot);
+                }
+            } else if (dot) {
+                dot.remove();
+            }
+        });
+    } catch (e) { console.error("Notif Error", e); }
+}
+
+// تشغيل الفحص كل 10 ثوانٍ في جميع الصفحات
+setInterval(checkGlobalNotifications, 10000);
+checkGlobalNotifications();
+    </script>
+</body>
+</html>

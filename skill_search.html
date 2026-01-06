@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SkillSwap - Find Skills</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#3B82F6", "primary-hover": "#2563EB", "secondary": "#10B981",
+              "background-light": "#FAFAFA", "background-dark": "#111827",
+              "surface-light": "#FFFFFF", "surface-dark": "#1F2937",
+              "text-light": "#1F2937", "text-muted-light": "#6B7280",
+              "text-dark": "#F9FAFB", "text-muted-dark": "#9CA3AF",
+            },
+            fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased h-screen flex overflow-hidden selection:bg-primary/20">
+
+    <aside class="w-64 bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 hidden md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 cursor-pointer" onclick="window.location.href='landing_page.html'">
+            <div class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
+                <span class="material-symbols-outlined text-2xl">hub</span> SkillSwap
+            </div>
+        </div>
+
+        <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+            <a href="user_dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <a href="user_profile.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">person</span> My Profile
+            </a>
+            <a href="skill_search.html" class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-xl font-semibold transition-colors">
+                <span class="material-symbols-outlined filled">search</span> Find Skills
+            </a>
+            <a href="teach_skill.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">school</span> Teach a Skill
+            </a>
+            <div class="pt-4 pb-1 px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Community</div>
+            <a href="community.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">groups</span> Community
+            </a>
+            <a href="leaderboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">leaderboard</span> Leaderboard
+            </a>
+            <div class="pt-4 pb-1 px-3 text-xs font-bold text-gray-400 uppercase tracking-wider">Tools</div>
+            <a href="messages.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">chat</span> Messages
+            </a>
+            <a href="payment&reward_sys.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">account_balance_wallet</span> Wallet
+            </a>
+            <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
+                <span class="material-symbols-outlined">settings</span> Settings
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200 dark:border-gray-800">
+             <div class="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer group">
+                <div class="relative w-10 h-10 shrink-0">
+                    <img id="sidebar-avatar" src="https://i.pravatar.cc/150" class="w-10 h-10 rounded-full object-cover border">
+                </div>
+                <div class="flex-1 overflow-hidden" onclick="window.location.href='user_profile.html'">
+                    <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">View Profile</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="h-16 flex items-center justify-between px-6 border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md z-10 shrink-0">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden p-2 text-text-muted-light hover:text-primary rounded-lg"><span class="material-symbols-outlined">menu</span></button>
+                <h2 class="text-xl font-bold hidden sm:block">Find a Mentor</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="logout-btn" class="p-2 text-text-muted-light hover:text-red-500 transition-colors" title="Logout"><span class="material-symbols-outlined">logout</span></button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8">
+            <div class="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <div class="max-w-xl">
+                    <h2 class="text-4xl font-extrabold tracking-tight text-text-light dark:text-white mb-2">Find Your Next <span class="text-primary">Skill</span></h2>
+                    <p class="text-lg text-text-muted-light dark:text-text-muted-dark">Discover expert-led sessions and master new skills with mentors.</p>
+                </div>
+                <div class="w-full md:w-auto md:min-w-[400px]">
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-primary transition-colors">
+                            <span class="material-symbols-outlined">search</span>
+                        </div>
+                        <input id="search-input" class="block w-full rounded-2xl border-0 bg-white py-4 pl-12 pr-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-primary dark:bg-surface-dark dark:ring-gray-700 dark:text-white" placeholder="What do you want to learn? (e.g. Python)" type="text"/>
+                        <button onclick="performSearch()" class="absolute right-2 top-2 bottom-2 bg-primary hover:bg-primary-hover text-white px-4 rounded-xl font-medium text-sm transition-colors">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+                <aside class="lg:col-span-3">
+                    <div class="sticky top-6 space-y-8">
+                        <div class="rounded-2xl bg-surface-light dark:bg-surface-dark p-6 shadow-sm border border-gray-100 dark:border-gray-800">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-lg">Filters</h3>
+                                <button onclick="resetFilters()" class="text-xs font-medium text-primary hover:underline cursor-pointer">Reset</button>
+                            </div>
+                            <div class="space-y-6">
+                                <div>
+                                    <h4 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Discover</h4>
+                                    <ul class="space-y-2">
+                                        <li><button onclick="loadAllCourses()" class="w-full flex items-center gap-3 rounded-xl bg-primary/5 px-3 py-2 text-sm font-bold text-primary transition-colors text-left"><span class="material-symbols-outlined text-[20px]">apps</span> All Courses</button></li>
+                                        <li><button onclick="quickSearch('Coding')" class="w-full flex items-center gap-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 text-sm font-medium text-text-muted-light transition-colors text-left"><span class="material-symbols-outlined text-[20px]">code</span> Coding</button></li>
+                                        <li><button onclick="quickSearch('Design')" class="w-full flex items-center gap-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 text-sm font-medium text-text-muted-light transition-colors text-left"><span class="material-symbols-outlined text-[20px]">brush</span> Design</button></li>
+                                        <li><button onclick="quickSearch('Marketing')" class="w-full flex items-center gap-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 text-sm font-medium text-text-muted-light transition-colors text-left"><span class="material-symbols-outlined text-[20px]">trending_up</span> Marketing</button></li>
+                                    </ul>
+                                </div>
+                                <hr class="border-gray-100 dark:border-gray-700"/>
+                                <div>
+                                    <h4 class="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">Sort By</h4>
+                                    <ul class="space-y-2">
+                                        <li><button onclick="sortByRating()" class="w-full flex items-center gap-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 text-sm font-medium text-text-muted-light transition-colors text-left"><span class="material-symbols-outlined text-[20px]">star</span>Top Rated</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="lg:col-span-9">
+                    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <p id="results-count" class="text-sm font-medium text-text-muted-light">Discovering expert mentors...</p>
+                    </div>
+                    <div id="results-grid" class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentResults = [];
+        let myId = null;
+        let myName = "";
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Auth Setup
+            myId = localStorage.getItem('skillswap_temp_userid') || JSON.parse(localStorage.getItem('skillswap_user') || '{}').userId;
+            if (!myId) { window.location.href = 'login.html'; return; }
+
+            try {
+                // 2. Fetch Latest User Data & Sync Credits
+                const response = await fetch(`http://127.0.0.1:5000/api/users/${myId}`);
+                const user = await response.json();
+                
+                myName = user.fullName;
+                localStorage.setItem('userCredits', user.creditBalance || 0); // Sync credits for guard
+                
+                document.getElementById('sidebar-name').innerText = user.fullName;
+                if(user.profilePicture) document.getElementById('sidebar-avatar').src = user.profilePicture;
+            } catch (err) { console.error("Sync Error:", err); }
+
+            loadAllCourses();
+
+            window.performSearch = async () => {
+                const query = document.getElementById('search-input').value.trim();
+                if (!query) return loadAllCourses();
+                
+                const grid = document.getElementById('results-grid');
+                grid.innerHTML = `<div class="col-span-full text-center py-10"><span class="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span></div>`;
+                
+                try {
+                    const res = await fetch(`http://127.0.0.1:5000/api/search?skill=${encodeURIComponent(query)}`);
+                    currentResults = await res.json();
+                    renderResults(currentResults);
+                } catch (err) { 
+                    grid.innerHTML = `<p class="col-span-full text-center text-red-500">Error fetching data.</p>`; 
+                }
+            };
+        });
+
+        async function loadAllCourses() {
+            const grid = document.getElementById('results-grid');
+            grid.innerHTML = `<div class="col-span-full text-center py-10"><span class="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span></div>`;
+            try {
+                const res = await fetch('http://127.0.0.1:5000/api/teachers/all');
+                currentResults = await res.json();
+                renderResults(currentResults);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderResults(teachers) {
+            const grid = document.getElementById('results-grid');
+            grid.innerHTML = '';
+            document.getElementById('results-count').innerText = `Showing ${teachers.length} results`;
+            
+            if (teachers.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400"><p class="text-lg font-semibold">No mentors found matching your search.</p></div>`;
+                return;
+            }
+
+            teachers.forEach(teacher => {
+                if (teacher._id === myId) return;
+
+                const skillImage = teacher.lastSkillImage || `https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400`;
+
+                const card = `
+                <article class="group relative flex flex-col overflow-hidden rounded-[32px] bg-surface-light dark:bg-surface-dark shadow-sm border border-gray-100 dark:border-gray-800 transition-all hover:-translate-y-1 hover:shadow-xl hover:border-primary/30">
+                    <div class="aspect-[16/10] overflow-hidden bg-gray-100 dark:bg-gray-900 relative">
+                        <img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" src="${skillImage}" alt="Skill">
+                        <div class="absolute top-4 right-4 flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-xs font-bold text-gray-900 backdrop-blur-sm shadow-sm">
+                            <span class="material-symbols-outlined text-amber-400 text-[16px] filled">star</span> ${teacher.ratingAvg || 'New'}
+                        </div>
+                    </div>
+                    <div class="flex flex-1 flex-col p-6">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-lg text-text-light dark:text-white mb-1 line-clamp-1 group-hover:text-primary transition-colors">
+                                ${teacher.headline || (teacher.skillTags && teacher.skillTags[0]) || 'Skill Expert'}
+                            </h3>
+                            <div class="flex items-center gap-2">
+                                <img class="size-6 rounded-full object-cover border" src="${teacher.profilePicture || 'https://i.pravatar.cc/150'}">
+                                <p class="text-sm font-medium text-text-muted-light dark:text-text-muted-dark">${teacher.fullName}</p>
+                            </div>
+                        </div>
+                        <div class="mt-auto grid grid-cols-2 gap-2 border-t border-gray-100 dark:border-gray-700 pt-5">
+                            <button onclick="window.location.href='messages.html?contact=${teacher._id}'" class="flex items-center justify-center gap-1 py-2.5 bg-gray-50 dark:bg-gray-800 rounded-xl text-xs font-bold hover:bg-primary/10 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-sm">chat</span> Message
+                            </button>
+                            <button onclick="bookSession('${teacher._id}', '${teacher.fullName}', '${teacher.skillTags ? teacher.skillTags[0] : ''}')" class="py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-lg shadow-primary/20 hover:bg-primary-hover transition-all">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </article>`;
+                grid.innerHTML += card;
+            });
+        }
+
+        window.bookSession = async (tId, tName, skill) => {
+            // CRITICAL: Credit Guard to prevent Top-Up confusion
+            const userCredits = Number(localStorage.getItem('userCredits') || 0);
+            if (userCredits < 1) {
+                alert("⚠️ Insufficient Balance! You need at least 1 credit to book a session. Please top up in your dashboard.");
+                window.location.href = 'user_dashboard.html';
+                return;
+            }
+
+            const date = prompt("Enter Date (YYYY-MM-DD):", new Date().toISOString().split('T')[0]);
+            const time = prompt("Enter Time (e.g. 10:00 AM):", "10:00 AM");
+            if(!date || !time) return;
+
+            try {
+                const res = await fetch('http://127.0.0.1:5000/api/bookings', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        learnerId: myId, teacherId: tId, 
+                        learnerName: myName, teacherName: tName, 
+                        skill: skill || 'Selected Skill', 
+                        date: date, time: time 
+                    })
+                });
+                if(res.ok) alert("✅ Booking request sent! Wait for teacher approval.");
+            } catch (e) { alert("❌ Failed to book session."); }
+        };
+
+        window.resetFilters = () => { document.getElementById('search-input').value = ''; loadAllCourses(); };
+        window.quickSearch = (term) => { document.getElementById('search-input').value = term; performSearch(); };
+        window.sortByRating = () => { currentResults.sort((a, b) => (b.ratingAvg || 0) - (a.ratingAvg || 0)); renderResults(currentResults); };
+
+        document.getElementById('logout-btn').onclick = () => { 
+            if(confirm("Log out?")) {
+                localStorage.clear(); 
+                window.location.href = 'login.html'; 
+            }
+        };
+    </script>
+</body>
+</html>

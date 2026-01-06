@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SkillSwap - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3B82F6", 
+                        "primary-hover": "#2563EB", 
+                        "secondary": "#10B981",
+                        "background-light": "#FAFAFA", 
+                        "background-dark": "#111827",
+                        "surface-light": "#FFFFFF", 
+                        "surface-dark": "#1F2937",
+                        "text-light": "#1F2937", 
+                        "text-muted-light": "#6B7280",
+                        "text-dark": "#F9FAFB", 
+                        "text-muted-dark": "#9CA3AF",
+                    },
+                    fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
+                },
+            },
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #374151; }
+        .filled { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased overflow-hidden flex h-screen selection:bg-primary/20">
+
+    <aside class="hidden w-64 flex-col border-r border-gray-200 dark:border-gray-800 bg-surface-light dark:bg-surface-dark md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 cursor-pointer" onclick="window.location.href='landing_page.html'">
+            <div class="flex flex-col">
+                <div class="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
+                    <span class="material-symbols-outlined text-2xl">hub</span> SkillSwap
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-1">
+            <a href="user_dashboard.html" class="group flex items-center gap-3 rounded-xl bg-primary/10 px-3 py-2.5 text-primary font-bold">
+                <span class="material-symbols-outlined filled">dashboard</span> Dashboard
+            </a>
+            <a href="my_sessions.html" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                <span class="material-symbols-outlined">calendar_month</span> My Sessions
+            </a>
+            <a href="user_profile.html" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                <span class="material-symbols-outlined">person</span> My Profile
+            </a>
+            <a href="skill_search.html" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                <span class="material-symbols-outlined">search</span> Find Skills
+            </a>
+            <a href="community.html" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                <span class="material-symbols-outlined">groups</span> Community
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-gray-200 dark:border-gray-800">
+            <button onclick="window.location.href='teach_skill.html'" class="flex w-full cursor-pointer items-center justify-center rounded-xl bg-primary py-3 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-transform active:scale-95 hover:bg-primary-hover gap-2">
+                <span class="material-symbols-outlined text-lg">school</span> Start Teaching
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex min-w-0 flex-1 flex-col h-full relative">
+        
+        <header class="flex h-16 items-center justify-between border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-8 z-10 sticky top-0">
+            <div class="flex flex-1 items-center">
+                <button class="mr-4 text-gray-500 lg:hidden"><span class="material-symbols-outlined">menu</span></button>
+                <div class="relative w-full max-w-md hidden md:block">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 material-symbols-outlined">search</span>
+                    <input class="block w-full rounded-xl border-none bg-gray-100 dark:bg-gray-900 py-2 pl-10 pr-3 text-sm focus:ring-2 focus:ring-primary dark:text-white" placeholder="Search for skills..." type="text"/>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
+                    <img id="header-avatar" src="https://i.pravatar.cc/150" class="h-9 w-9 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+                    <div class="hidden text-left sm:block">
+                        <p id="header-name" class="text-xs font-bold text-gray-900 dark:text-white">Loading...</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Member</p>
+                    </div>
+                    <button id="logout-btn" class="ml-2 text-gray-400 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-lg">logout</span></button>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div class="mx-auto max-w-6xl space-y-8">
+
+                <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <h2 id="welcome-msg" class="text-3xl font-black tracking-tight text-gray-900 dark:text-white">Welcome back!</h2>
+                        <p class="text-gray-500 dark:text-gray-400 mt-1">Ready to learn something new today?</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="window.location.href='skill_search.html'" class="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+                            <span class="material-symbols-outlined text-[18px]">add</span> Book Session
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-surface-dark p-5 shadow-sm border border-gray-100 dark:border-gray-800">
+                        <div class="flex justify-between">
+                            <div>
+                                <p class="text-xs font-bold uppercase text-gray-400 tracking-wider">Balance</p>
+                                <p class="mt-2 text-3xl font-black text-gray-900 dark:text-white"><span id="stat-balance">0</span><span class="text-lg text-primary ml-1">$</span></p>
+                            </div>
+                            <div class="h-10 w-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+                        </div>
+                    </div>
+
+                    <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-surface-dark p-5 shadow-sm border border-gray-100 dark:border-gray-800">
+                        <div class="flex justify-between">
+                            <div>
+                                <p class="text-xs font-bold uppercase text-gray-400 tracking-wider">Skills Shared</p>
+                                <p id="stat-skills" class="mt-2 text-3xl font-black text-gray-900 dark:text-white">0</p>
+                            </div>
+                            <div class="h-10 w-10 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center"><span class="material-symbols-outlined">school</span></div>
+                        </div>
+                    </div>
+
+                    <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-surface-dark p-5 shadow-sm border border-gray-100 dark:border-gray-800">
+                        <div class="flex justify-between">
+                            <div>
+                                <p class="text-xs font-bold uppercase text-gray-400 tracking-wider">Rating</p>
+                                <div class="flex items-baseline gap-1 mt-2">
+                                    <p id="stat-rating" class="text-3xl font-black text-gray-900 dark:text-white">0.0</p>
+                                    <span class="material-symbols-outlined text-yellow-500 filled text-lg">star</span>
+                                </div>
+                            </div>
+                            <div class="h-10 w-10 rounded-lg bg-yellow-500/10 text-yellow-500 flex items-center justify-center"><span class="material-symbols-outlined">reviews</span></div>
+                        </div>
+                    </div>
+
+                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-blue-600 p-5 shadow-lg shadow-primary/20 text-white">
+                        <div class="flex items-center gap-2 text-white/90 mb-2">
+                            <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                            <p class="text-xs font-bold uppercase tracking-wider">AI Insight</p>
+                        </div>
+                        <p class="text-lg font-bold leading-tight">Keep up the momentum! You are on a 3-day streak.</p>
+                        <div class="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-white/20 blur-xl"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary filled">psychology</span>
+                            AI Recommended Mentors
+                        </h3>
+                        <a href="skill_search.html" class="text-sm font-bold text-primary hover:text-primary-hover">View All</a>
+                    </div>
+                    
+                    <div id="ai-matches-container" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <div class="col-span-full text-center py-10 text-gray-400 italic">
+                            Running AI matching algorithm...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 shadow-sm">
+                        <div class="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
+                            <h3 class="font-bold text-gray-900 dark:text-white">Recent Activity</h3>
+                            <a href="my_sessions.html" class="text-xs font-bold text-gray-500 hover:text-primary uppercase tracking-wider">View All</a>
+                        </div>
+                        <div id="activity-feed" class="p-6 flex flex-col gap-6">
+                            <p class="text-sm text-gray-400 italic">No recent activity found.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-6">
+                        <div class="rounded-2xl bg-gradient-to-br from-gray-900 to-black p-6 text-white overflow-hidden relative shadow-xl">
+                            <div class="relative z-10">
+                                <h3 class="font-bold text-xl mb-2">Pro Membership</h3>
+                                <p class="text-sm text-gray-400 mb-6">Get unlimited credits and priority AI matching.</p>
+                                <button class="w-full py-3 rounded-xl bg-white text-black font-bold text-sm hover:bg-gray-100 transition-colors">Upgrade Plan</button>
+                            </div>
+                            <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-1/4 translate-y-1/4">
+                                <span class="material-symbols-outlined text-[150px]">rocket_launch</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let myId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            myId = localStorage.getItem('skillswap_temp_userid');
+            if (!myId) { window.location.href = 'login.html'; return; }
+
+            await loadUserData();
+            await loadAIMatches();
+            await loadRecentActivity();
+        });
+
+        async function loadUserData() {
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/users/${myId}`);
+                const user = await res.json();
+                
+                // Header & Welcome
+                document.getElementById('header-name').innerText = user.fullName;
+                document.getElementById('welcome-msg').innerText = `Welcome back, ${user.fullName.split(' ')[0]}!`;
+                if(user.profilePicture) document.getElementById('header-avatar').src = user.profilePicture;
+
+                // Stats
+                document.getElementById('stat-balance').innerText = user.creditBalance || 0;
+                document.getElementById('stat-rating').innerText = user.ratingAvg || "0.0";
+                document.getElementById('stat-skills').innerText = (user.skillTags || []).length;
+
+            } catch(e) { console.error("User Load Error", e); }
+        }
+
+        async function loadAIMatches() {
+            const container = document.getElementById('ai-matches-container');
+            
+            try {
+                // 1. Fetch from Backend
+                const res = await fetch(`http://127.0.0.1:5000/api/ai/matches/${myId}`);
+                const data = await res.json();
+                
+                let matches = data.recommendations;
+
+                // 2. ROBUST PARSING (Fixes the issue where AI returns string markdown)
+                if (typeof matches === 'string') {
+                    try {
+                        const cleanJson = matches.replace(/```json/g, '').replace(/```/g, '').trim();
+                        matches = JSON.parse(cleanJson);
+                    } catch (e) {
+                        console.warn("Parsing failed, using empty list");
+                        matches = [];
+                    }
+                }
+
+                // 3. Check for empty results
+                if (!matches || matches.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-8">
+                            <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">sentiment_dissatisfied</span>
+                            <p class="text-gray-500">No matches found yet.</p>
+                            <p class="text-xs text-gray-400 mt-1">Try adding "Learning Skills" in your profile!</p>
+                        </div>`;
+                    return;
+                }
+
+                // 4. Render Cards
+                container.innerHTML = matches.slice(0, 3).map(m => `
+                    <div class="group relative flex flex-col rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-5 transition-all hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5">
+                        <div class="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-[10px] font-bold text-green-500 uppercase tracking-wider">
+                            <span class="material-symbols-outlined text-[12px]">bolt</span> ${m.match_percentage || '95%'}
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-xl font-bold text-primary border border-primary/20">
+                                ${(m.name || "U").charAt(0)}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 dark:text-white line-clamp-1">${m.name}</h4>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase line-clamp-1">${m.role || 'Mentor'}</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-4 line-clamp-2 h-8">${m.reason || 'Recommended based on your learning interests.'}</p>
+                        <button onclick="window.location.href='user_profile.html?id=${m.id}'" class="w-full rounded-xl bg-gray-50 dark:bg-gray-800 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white transition-all">
+                            View Profile
+                        </button>
+                    </div>
+                `).join('');
+
+            } catch (e) {
+                console.error("AI Display Error:", e);
+                container.innerHTML = `<p class="col-span-full text-center text-red-400 text-sm">Service temporarily unavailable.</p>`;
+            }
+        }
+
+        async function loadRecentActivity() {
+            try {
+                const res = await fetch(`http://127.0.0.1:5000/api/bookings/user/${myId}`);
+                const bookings = await res.json();
+                const container = document.getElementById('activity-feed');
+
+                if(bookings.length > 0) {
+                    container.innerHTML = bookings.slice(0, 3).map(b => {
+                        const isMeTeacher = b.teacherId === myId;
+                        const otherName = isMeTeacher ? b.learnerName : b.teacherName;
+                        const icon = isMeTeacher ? 'school' : 'person';
+                        const color = isMeTeacher ? 'text-purple-500 bg-purple-500/10' : 'text-blue-500 bg-blue-500/10';
+                        
+                        return `
+                        <div class="flex gap-4 items-start">
+                            <div class="mt-1 h-10 w-10 shrink-0 rounded-full ${color} flex items-center justify-center">
+                                <span class="material-symbols-outlined">${icon}</span>
+                            </div>
+                            <div class="flex flex-col gap-1 w-full">
+                                <p class="text-sm font-bold text-gray-900 dark:text-white">Session: ${b.skill}</p>
+                                <p class="text-xs text-gray-500">With <span class="font-bold text-gray-700 dark:text-gray-300">${otherName}</span> • ${b.date}</p>
+                                <div class="mt-1">
+                                    <span class="px-2 py-0.5 text-[10px] font-black uppercase rounded bg-gray-100 dark:bg-gray-800 text-gray-500">${b.status}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+            } catch(e) {}
+        }
+
+        document.getElementById('logout-btn').onclick = () => { localStorage.clear(); window.location.href = 'login.html'; };
+    </script>
+</body>
+</html>

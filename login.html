@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>SkillSwap - Login</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfeff', 100: '#cffafe', 200: '#a5f3fc', 300: '#67e8f9', 400: '#22d3ee',
+                            500: '#06b6d4', 600: '#0891b2', 700: '#0e7490', 800: '#155e75', 900: '#164e63',
+                        },
+                        gray: { 850: '#1f2937', 900: '#111827', 950: '#030712' }
+                    },
+                    fontFamily: { sans: ["Lexend", "sans-serif"] },
+                    borderRadius: { 'xl': '0.75rem', '2xl': '1rem', '3xl': '1.5rem' },
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        ::selection { background-color: #06b6d4; color: white; }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 h-screen w-full overflow-hidden flex antialiased">
+
+    <div class="hidden lg:flex w-1/2 h-full relative flex-col justify-between p-16 bg-gray-900 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-gradient-to-tr from-brand-900/90 via-gray-900/80 to-brand-800/40 mix-blend-multiply z-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-950/50 to-gray-950 z-10"></div>
+            <div class="w-full h-full bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');"></div>
+        </div>
+
+        <div class="relative z-20 flex items-center gap-3 cursor-pointer" onclick="window.location.href='landing_page.html'">
+            <div class="size-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex items-center justify-center text-brand-300 shadow-xl">
+                <span class="material-symbols-outlined text-3xl">hub</span>
+            </div>
+            <h2 class="text-white text-2xl font-bold tracking-tight">SkillSwap</h2>
+        </div>
+
+        <div class="relative z-20 max-w-xl space-y-6">
+            <h1 class="text-5xl font-bold leading-tight text-white drop-shadow-sm">
+                Unlock your potential with <span class="text-brand-400">AI-powered</span> mentorship.
+            </h1>
+            <p class="text-gray-300 text-lg leading-relaxed font-light">
+                Connect instantly with experts worldwide. Experience interactive sessions designed to accelerate your growth.
+            </p>
+        </div>
+
+        <div class="relative z-20 flex gap-6 text-sm font-medium text-gray-500">
+            <span>© 2026 SkillSwap Inc.</span>
+        </div>
+    </div>
+
+    <div class="w-full lg:w-1/2 h-full flex flex-col bg-white dark:bg-gray-950 overflow-y-auto relative">
+        <div class="flex-1 flex flex-col justify-center items-center px-6 sm:px-12 md:px-20 lg:px-24 py-12">
+            <div class="w-full max-w-[440px] space-y-8">
+                <div class="text-center lg:text-left space-y-2">
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Welcome back</h1>
+                    <p class="text-gray-500 dark:text-gray-400 text-base">Please enter your details to sign in.</p>
+                </div>
+
+                <form id="loginForm" class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Email or Username</label>
+                        <div class="relative group">
+                            <input id="email" class="w-full h-12 px-4 pl-11 bg-gray-50 dark:bg-gray-900 border-0 ring-1 ring-gray-200 dark:ring-gray-800 rounded-xl focus:ring-2 focus:ring-brand-500 text-base text-gray-900 dark:text-white shadow-sm" placeholder="name@example.com" type="text" required/>
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-brand-500 pointer-events-none flex items-center">
+                                <span class="material-symbols-outlined text-[20px]">mail</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 ml-1">Password</label>
+                        <div class="relative group">
+                            <input id="password" class="w-full h-12 px-4 pl-11 pr-11 bg-gray-50 dark:bg-gray-900 border-0 ring-1 ring-gray-200 dark:ring-gray-800 rounded-xl focus:ring-2 focus:ring-brand-500 text-base text-gray-900 dark:text-white shadow-sm" placeholder="••••••••" type="password" required/>
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-brand-500 pointer-events-none flex items-center">
+                                <span class="material-symbols-outlined text-[20px]">lock</span>
+                            </div>
+                            <button class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1" type="button" onclick="togglePassword()">
+                                <span id="pass-icon" class="material-symbols-outlined text-[20px]">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full h-12 bg-brand-600 hover:bg-brand-700 text-white font-bold text-base rounded-xl transition-all transform active:scale-[0.98] shadow-lg shadow-brand-500/30">
+                        Sign In
+                    </button>
+                </form>
+
+                <p class="text-center text-sm text-gray-500 mt-6">
+                    Don't have an account?
+                    <a class="font-bold text-brand-600 hover:text-brand-700 transition-colors" href="signup.html">Create free account</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CORE APP LOGIC
+        const App = {
+            saveUser: (user) => {
+                // Store primary object for general use
+                localStorage.setItem('skillswap_user', JSON.stringify(user));
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                // CRITICAL: Store these separately for the guards and credit checks on other pages
+                if (user.userId) localStorage.setItem('skillswap_temp_userid', user.userId);
+                if (user.roles) localStorage.setItem('skillswap_user_roles', JSON.stringify(user.roles));
+                
+                // SAVE CREDITS: This fixes the issue where pages thought you had 0 credits
+                localStorage.setItem('userCredits', user.creditBalance || 0); 
+            }
+        };
+
+        // HANDLE LOGIN
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('submitBtn');
+
+            btn.innerText = "Signing in...";
+            btn.disabled = true;
+
+            try {
+                // Ensure your app.py is running on port 5000
+                const res = await fetch('http://127.0.0.1:5000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+                
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alert(data.error || 'Login failed');
+                    btn.innerText = "Sign In";
+                    btn.disabled = false;
+                    return;
+                }
+
+                // SUCCESS: Save user details and credit balance
+                App.saveUser({
+                    userId: data.userId,
+                    fullName: data.fullName,
+                    roles: data.roles,
+                    profilePicture: data.profilePicture,
+                    creditBalance: data.creditBalance // Synced from Backend
+                });
+
+                // REDIRECT based on user role
+                if (data.roles && data.roles.includes('admin')) {
+                    window.location.href = 'admin_dashboard.html';
+                } else {
+                    window.location.href = 'user_dashboard.html';
+                }
+
+            } catch (err) {
+                alert('Connection Error: Is your Python server (app.py) running?');
+                console.error(err);
+                btn.innerText = "Sign In";
+                btn.disabled = false;
+            }
+        });
+
+        // TOGGLE PASSWORD VISIBILITY
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.getElementById('pass-icon');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerText = "visibility_off";
+            } else {
+                input.type = "password";
+                icon.innerText = "visibility";
+            }
+        }
+    </script>
+</body>
+</html>
