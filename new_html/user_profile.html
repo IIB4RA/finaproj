@@ -34,6 +34,8 @@
             0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); }
             50% { box-shadow: 0 0 15px 5px rgba(168, 85, 247, 0.2); }
         }
+        .ai-loading { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased h-screen flex overflow-hidden selection:bg-primary/20">
@@ -44,7 +46,6 @@
                 <span class="material-symbols-outlined text-2xl">hub</span> SkillSwap
             </div>
         </div>
-
         <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
             <a href="user_dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl font-medium transition-colors">
                 <span class="material-symbols-outlined">dashboard</span> Dashboard
@@ -62,7 +63,6 @@
                 <span class="material-symbols-outlined">school</span> Teach a Skill
             </a>
         </nav>
-
         <div class="p-4 border-t border-gray-200 dark:border-gray-800">
              <div class="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors cursor-pointer group">
                 <img id="sidebar-avatar-small" src="https://i.pravatar.cc/150" class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700">
@@ -82,7 +82,6 @@
 
         <div class="flex-1 overflow-y-auto p-6 md:p-8 lg:p-12 space-y-12">
             <div class="flex flex-col lg:flex-row gap-12 max-w-7xl mx-auto">
-                
                 <aside class="w-full lg:w-96 flex-shrink-0 flex flex-col gap-8">
                     <div class="bg-surface-light dark:bg-surface-dark rounded-[40px] p-8 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center text-center relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-br from-primary/30 via-primary/10 to-transparent"></div>
@@ -110,9 +109,7 @@
                         <h3 class="text-2xl font-black mb-6 flex items-center gap-3">
                             <span class="material-symbols-outlined text-primary text-3xl">fingerprint</span> About Me
                         </h3>
-                        <p id="profile-bio" class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg italic">
-                            Tell the community about your expertise.
-                        </p>
+                        <p id="profile-bio" class="text-gray-600 dark:text-gray-400 leading-relaxed text-lg italic">Tell the community about your expertise.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -152,9 +149,9 @@
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <label class="block text-xs font-black uppercase text-gray-400 ml-1">Biography</label>
-                        <button type="button" onclick="fixMyBio()" class="ai-glow flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-700 transition-all active:scale-95">
-                            <span class="material-symbols-outlined text-[14px] filled">auto_awesome</span>
-                            AI Doctor ✨
+                        <button type="button" id="ai-doctor-btn" onclick="fixMyBio()" class="ai-glow flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-700 transition-all active:scale-95">
+                            <span id="ai-icon" class="material-symbols-outlined text-[14px] filled">auto_awesome</span>
+                            <span id="ai-text">AI Doctor ✨</span>
                         </button>
                     </div>
                     <textarea id="edit-bio" rows="4" class="w-full rounded-2xl border-gray-100 dark:bg-gray-800 dark:border-gray-700 p-4 outline-none transition-all resize-none dark:text-white" placeholder="Tell us about yourself..."></textarea>
@@ -190,13 +187,10 @@
             profileId = urlParams.get('id') || myId;
 
             if (!myId) { window.location.href = 'login.html'; return; }
-            
-            // Hide edit buttons if viewing someone else's profile
             if (profileId !== myId) {
                 document.getElementById('edit-profile-btn').classList.add('hidden');
                 document.getElementById('photo-upload-btn').classList.add('hidden');
             }
-            
             await loadProfileData(profileId);
         });
 
@@ -206,12 +200,10 @@
                 const user = await res.json();
                 currentUserData = user;
 
-                // Bind Data to UI
                 document.getElementById('profile-name').innerText = user.fullName;
                 document.getElementById('sidebar-name-small').innerText = user.fullName;
-                document.getElementById('profile-headline').innerText = user.headline || "Passionate Skill Swapper";
-                document.getElementById('profile-bio').innerText = user.bio || "This user hasn't added a bio yet.";
-                
+                document.getElementById('profile-headline').innerText = user.headline || "Mentor";
+                document.getElementById('profile-bio').innerText = user.bio || "No bio yet.";
                 const pic = user.profilePicture || "https://i.pravatar.cc/150";
                 document.getElementById('profile-avatar').src = pic;
                 document.getElementById('sidebar-avatar-small').src = pic;
@@ -222,48 +214,47 @@
         }
 
         // ============================================
-        // SMART AI DOCTOR (Context-Aware Version)
+        // SMART AI DOCTOR (FORCE RE-GENERATE VERSION)
         // ============================================
         async function fixMyBio() {
             const bioArea = document.getElementById('edit-bio');
-            const teachSkills = document.getElementById('edit-teach-skills').value;
-            const learnSkills = document.getElementById('edit-learn-skills').value; // Sending context
-            const headline = document.getElementById('edit-headline').value;
-            const name = currentUserData.fullName;
+            const aiBtn = document.getElementById('ai-doctor-btn');
+            const aiIcon = document.getElementById('ai-icon');
+            const aiText = document.getElementById('ai-text');
 
-            if (!teachSkills && !headline && !learnSkills) {
-                alert("Please add a Headline or Skills first so the AI can help!");
-                return;
-            }
-
-            const originalText = bioArea.value;
-            bioArea.value = "AI Doctor is crafting your professional bio... ✨";
+            // Set UI to loading state
+            aiIcon.innerText = "sync";
+            aiIcon.classList.add("ai-loading");
+            aiText.innerText = "Tinkering...";
             bioArea.disabled = true;
 
             try {
-                // Sending FULL context to the new updated backend
+                // We send a randomSeed to the backend so the AI knows to change perspective
                 const res = await fetch('http://127.0.0.1:5000/api/ai/generate-bio', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache' // Force browser to not use cache
+                    },
                     body: JSON.stringify({ 
-                        name: name, 
-                        skills: teachSkills, 
-                        headline: headline,
-                        learnSkills: learnSkills 
-                    })
+                        userId: myId,
+                        randomSeed: Math.random(), // Unique seed for every click
+                        forceFresh: true
+                    }) 
                 });
                 
                 const data = await res.json();
                 if(data.bio) {
+                    // Update the textarea with the new unique bio
                     bioArea.value = data.bio;
-                } else {
-                    bioArea.value = originalText;
-                    alert("AI error. Check server logs.");
                 }
             } catch (e) {
-                bioArea.value = originalText;
-                alert("Connection error.");
+                alert("The AI Doctor is away. Try again.");
             } finally {
+                // Restore UI state
+                aiIcon.innerText = "auto_awesome";
+                aiIcon.classList.remove("ai-loading");
+                aiText.innerText = "AI Doctor ✨";
                 bioArea.disabled = false;
             }
         }
@@ -296,8 +287,8 @@
                 fullName: currentUserData.fullName,
                 headline: document.getElementById('edit-headline').value,
                 bio: document.getElementById('edit-bio').value,
-                skills: document.getElementById('edit-teach-skills').value, // Used for teaching
-                learnSkills: document.getElementById('edit-learn-skills').value.split(',').map(s=>s.trim()).filter(s=>s)
+                skills: document.getElementById('edit-teach-skills').value, 
+                learnSkills: document.getElementById('edit-learn-skills').value
             };
 
             const res = await fetch(`http://127.0.0.1:5000/api/users/${myId}`, {
@@ -308,9 +299,7 @@
 
             if (res.ok) {
                 closeEditModal();
-                loadProfileData(myId);
-            } else {
-                alert("Failed to save changes.");
+                await loadProfileData(myId);
             }
         };
 
