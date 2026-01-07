@@ -4,7 +4,11 @@ import os
 import random
 
 # ⚠️ مفتاح OpenAI
+<<<<<<< Updated upstream
 OPENAI_API_KEY = ""
+=======
+OPENAI_API_KEY = "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"
+>>>>>>> Stashed changes
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 

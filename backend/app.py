@@ -538,6 +538,7 @@ def ai_generate_bio():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+<<<<<<< Updated upstream
 # ======================
 # 11. NEW RATING SYSTEM (Corrected for MongoDB)
 # ======================
@@ -591,6 +592,34 @@ def save_rating():
     except Exception as e:
         print(f"Error saving rating: {e}")
         return jsonify({'success': False, 'message': 'حدث خطأ في السيرفر'}), 500
+=======
+
+# هذا المسار هو الذي تبحث عنه صفحة survey1.html و survey2.html
+@app.route("/api/users/<user_id>/update-profile", methods=["POST"])
+def update_profile_survey(user_id):
+    data = request.json
+    update_data = {}
+
+    # معالجة مهارات التعليم (survey1)
+    if "teachSkills" in data:
+        update_data["skillTags"] = data["teachSkills"]
+        update_data["roles"] = ["learner", "teacher"] # تفعيل دور المعلم فوراً
+
+    # معالجة مهارات التعلم (survey2)
+    if "learnSkills" in data:
+        update_data["learningSkills"] = data["learnSkills"]
+
+    # معالجة العنوان الوظيفي
+    if "headline" in data:
+        update_data["headline"] = data["headline"]
+
+    if update_data:
+        users_col.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
+        return jsonify({"message": "Profile updated successfully"}), 200
+    
+    return jsonify({"error": "No data provided"}), 400
+
+>>>>>>> Stashed changes
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
