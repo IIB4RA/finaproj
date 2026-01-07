@@ -33,9 +33,17 @@
     </script>
     <style>
         ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #374151; }
         .filled { font-variation-settings: 'FILL' 1; }
+        
+        /* Animation for notification dropdown */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .dropdown-animate { animation: slideDown 0.2s ease-out forwards; }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans antialiased overflow-hidden flex h-screen selection:bg-primary/20">
@@ -65,6 +73,15 @@
             <a href="community.html" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
                 <span class="material-symbols-outlined">groups</span> Community
             </a>
+            <a href="leaderboard.html" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                <span class="material-symbols-outlined">leaderboard</span> Leaderboard
+            </a>
+            <a href="payment&reward_sys.html" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                <span class="material-symbols-outlined">account_balance_wallet</span> Wallet
+            </a>
+            <a href="settings.html" class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-text-muted-light dark:text-text-muted-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                <span class="material-symbols-outlined">settings</span> Settings
+            </a>
         </nav>
 
         <div class="p-4 border-t border-gray-200 dark:border-gray-800">
@@ -76,7 +93,7 @@
 
     <main class="flex min-w-0 flex-1 flex-col h-full relative">
         
-        <header class="flex h-16 items-center justify-between border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-8 z-10 sticky top-0">
+        <header class="flex h-16 items-center justify-between border-b border-gray-200 dark:border-gray-800 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md px-4 sm:px-6 lg:px-8 z-30 sticky top-0">
             <div class="flex flex-1 items-center">
                 <button class="mr-4 text-gray-500 lg:hidden"><span class="material-symbols-outlined">menu</span></button>
                 <div class="relative w-full max-w-md hidden md:block">
@@ -86,6 +103,26 @@
             </div>
             
             <div class="flex items-center gap-4">
+                
+                <div class="relative">
+                    <button onclick="toggleNotifications()" class="relative p-2 text-gray-400 hover:text-primary transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none">
+                        <span class="material-symbols-outlined text-2xl">notifications</span>
+                        <span id="notif-badge" class="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white dark:border-surface-dark hidden animate-pulse"></span>
+                    </button>
+
+                    <div id="notif-dropdown" class="absolute right-0 mt-3 w-80 sm:w-96 bg-white dark:bg-surface-dark rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 hidden transform origin-top-right transition-all z-50">
+                        <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 rounded-t-2xl">
+                            <h3 class="font-bold text-sm text-gray-900 dark:text-white">Notifications</h3>
+                            <button onclick="markAllRead()" class="text-xs text-primary font-bold hover:underline">Mark all read</button>
+                        </div>
+                        <div id="notif-list" class="max-h-[400px] overflow-y-auto p-2 space-y-1">
+                            <div class="py-8 text-center text-gray-400 flex flex-col items-center">
+                                <span class="material-symbols-outlined text-3xl mb-2 opacity-50">notifications_off</span>
+                                <p class="text-xs">No new notifications</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
                     <img id="header-avatar" src="https://i.pravatar.cc/150" class="h-9 w-9 rounded-full object-cover border border-gray-200 dark:border-gray-700">
                     <div class="hidden text-left sm:block">
@@ -211,19 +248,106 @@
             await loadUserData();
             await loadAIMatches();
             await loadRecentActivity();
+            
+            // Initial Notification Load
+            loadNotifications();
+            // Poll for notifications every 30 seconds
+            setInterval(loadNotifications, 30000);
         });
+
+        // --- NOTIFICATION LOGIC ---
+        
+        async function loadNotifications() {
+            try {
+                // Ensure your backend has this endpoint: GET /api/notifications/<userId>
+                const res = await fetch(`http://127.0.0.1:5000/api/notifications/${myId}`);
+                const notifications = await res.json();
+                
+                const list = document.getElementById('notif-list');
+                const badge = document.getElementById('notif-badge');
+                
+                // Sort by new
+                notifications.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+                // Check for unread
+                const unreadCount = notifications.filter(n => !n.read).length;
+                
+                if (unreadCount > 0) {
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+
+                if (notifications.length === 0) {
+                    list.innerHTML = `
+                        <div class="py-8 text-center text-gray-400 flex flex-col items-center">
+                            <span class="material-symbols-outlined text-3xl mb-2 opacity-50">notifications_off</span>
+                            <p class="text-xs">No new notifications</p>
+                        </div>`;
+                    return;
+                }
+
+                list.innerHTML = notifications.map(n => `
+                    <div class="p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex gap-3 ${n.read ? 'opacity-60' : 'bg-blue-50/50 dark:bg-blue-900/10'}">
+                        <div class="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                            <span class="material-symbols-outlined text-sm">${getIconForType(n.type)}</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">${n.title}</p>
+                            <p class="text-[10px] text-gray-500 leading-relaxed">${n.message}</p>
+                            <p class="text-[9px] text-gray-400 mt-1">${new Date(n.date).toLocaleString()}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (e) {
+                console.error("Notif Error (Ensure backend exists):", e);
+            }
+        }
+
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notif-dropdown');
+            dropdown.classList.toggle('hidden');
+            if(!dropdown.classList.contains('hidden')){
+                dropdown.classList.add('dropdown-animate');
+            }
+        }
+
+        async function markAllRead() {
+            try {
+                await fetch(`http://127.0.0.1:5000/api/notifications/mark-all-read/${myId}`, { method: 'PUT' });
+                loadNotifications();
+            } catch(e) {}
+        }
+
+        function getIconForType(type) {
+            if(type === 'booking') return 'calendar_month';
+            if(type === 'wallet') return 'account_balance_wallet';
+            if(type === 'system') return 'info';
+            return 'notifications';
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const container = document.querySelector('.relative'); 
+            const dropdown = document.getElementById('notif-dropdown');
+            // This is a simple check, usually needs more specific targeting
+            if (dropdown && !dropdown.classList.contains('hidden') && !e.target.closest('button[onclick="toggleNotifications()"]') && !e.target.closest('#notif-dropdown')) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // --- END NOTIFICATION LOGIC ---
 
         async function loadUserData() {
             try {
                 const res = await fetch(`http://127.0.0.1:5000/api/users/${myId}`);
                 const user = await res.json();
                 
-                // Header & Welcome
                 document.getElementById('header-name').innerText = user.fullName;
                 document.getElementById('welcome-msg').innerText = `Welcome back, ${user.fullName.split(' ')[0]}!`;
                 if(user.profilePicture) document.getElementById('header-avatar').src = user.profilePicture;
 
-                // Stats
                 document.getElementById('stat-balance').innerText = user.creditBalance || 0;
                 document.getElementById('stat-rating').innerText = user.ratingAvg || "0.0";
                 document.getElementById('stat-skills').innerText = (user.skillTags || []).length;
@@ -235,35 +359,26 @@
             const container = document.getElementById('ai-matches-container');
             
             try {
-                // 1. Fetch from Backend
                 const res = await fetch(`http://127.0.0.1:5000/api/ai/matches/${myId}`);
                 const data = await res.json();
-                
                 let matches = data.recommendations;
 
-                // 2. ROBUST PARSING (Fixes the issue where AI returns string markdown)
                 if (typeof matches === 'string') {
                     try {
                         const cleanJson = matches.replace(/```json/g, '').replace(/```/g, '').trim();
                         matches = JSON.parse(cleanJson);
-                    } catch (e) {
-                        console.warn("Parsing failed, using empty list");
-                        matches = [];
-                    }
+                    } catch (e) { matches = []; }
                 }
 
-                // 3. Check for empty results
                 if (!matches || matches.length === 0) {
                     container.innerHTML = `
                         <div class="col-span-full text-center py-8">
                             <span class="material-symbols-outlined text-4xl text-gray-300 mb-2">sentiment_dissatisfied</span>
                             <p class="text-gray-500">No matches found yet.</p>
-                            <p class="text-xs text-gray-400 mt-1">Try adding "Learning Skills" in your profile!</p>
                         </div>`;
                     return;
                 }
 
-                // 4. Render Cards
                 container.innerHTML = matches.slice(0, 3).map(m => `
                     <div class="group relative flex flex-col rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-gray-800 p-5 transition-all hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5">
                         <div class="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-[10px] font-bold text-green-500 uppercase tracking-wider">
@@ -286,7 +401,6 @@
                 `).join('');
 
             } catch (e) {
-                console.error("AI Display Error:", e);
                 container.innerHTML = `<p class="col-span-full text-center text-red-400 text-sm">Service temporarily unavailable.</p>`;
             }
         }

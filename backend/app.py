@@ -6,17 +6,18 @@ from flask_cors import CORS
 from bson import ObjectId
 from datetime import datetime, timezone
 from werkzeug.utils import secure_filename
-from ai_service import AIService  # تأكد من وجود ملف ai_service.py بجانب هذا الملف
 
-# ======================
-# DATABASE SETUP
-# ======================
+# تأكد من وجود ملف ai_service.py وملف db.py في نفس المجلد
+from ai_service import AIService
 from db import users_col, db 
 
+# تعريف الكولكشنز
 posts_col = db["posts"]
 bookings_col = db["bookings"]
 messages_col = db["messages"]
 transactions_col = db["transactions"]
+# كولكشن التقييمات الجديد
+ratings_col = db["ratings"]
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -28,7 +29,7 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-# ضع مفتاح Whereby الخاص بك هنا
+# مفتاح Whereby
 WHEREBY_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmFwcGVhci5pbiIsImF1ZCI6Imh0dHBzOi8vYXBpLmFwcGVhci5pbi92MSIsImV4cCI6OTAwNzE5OTI1NDc0MDk5MSwiaWF0IjoxNzY3NDUxNzE0LCJvcmdhbml6YXRpb25JZCI6MzMyMTI2LCJqdGkiOiIyYzNmMTZlYS1iM2YxLTRiOGQtYTJkMC03ODhhNzM5ZGNiODUifQ.nkaUDATWwDiKj_LVCkqHYS-eDq43WcsQN1NMxE-jpfw"
 
 if not os.path.exists(UPLOAD_FOLDER):
@@ -69,6 +70,7 @@ def get_meeting_link(booking_id):
     booking = bookings_col.find_one({"_id": ObjectId(booking_id)})
     if not booking or "roomUrl" not in booking: return jsonify({"error": "Not ready"}), 404
     url = booking["hostRoomUrl"] if user_role == "teacher" else booking["roomUrl"]
+    # تم إضافة باراميترز لتقليل واجهة المستخدم
     return jsonify({"url": f"{url}?embed&chat=on&info=off&floatSelf=on"})
 
 # ======================
@@ -128,7 +130,6 @@ def update_user(user_id):
     if "headline" in data: update_data["headline"] = data["headline"]
     if "bio" in data: update_data["bio"] = data["bio"]
     if "skills" in data: update_data["skillTags"] = [s.strip() for s in data["skills"].split(",") if s.strip()]
-    # إضافة دعم لل Learning Skills
     if "learnSkills" in data: update_data["learningSkills"] = data["learnSkills"]
 
     if update_data:
@@ -150,18 +151,14 @@ def upload_file(user_id):
     return jsonify({"error": "File type error"}), 400
 
 # ======================
-# 3. SEARCH & SKILLS (FIXED FOR TEACH SKILL)
+# 3. SEARCH & SKILLS
 # ======================
 @app.route("/api/search")
 def search_users():
     skill_query = request.args.get("skill", "").strip()
-    
-    # إصلاح البحث: التأكد من البحث داخل skillTags للمعلمين
     if not skill_query:
-        # إذا البحث فارغ، جلب جميع المعلمين
         users = list(users_col.find({"roles": "teacher"}, {"passwordHash": 0}))
     else:
-        # استخدام Regex للبحث غير الحساس لحالة الأحرف
         regex_pattern = {"$regex": skill_query, "$options": "i"}
         users = list(users_col.find({"skillTags": regex_pattern, "roles": "teacher"}, {"passwordHash": 0}))
     
@@ -174,7 +171,6 @@ def get_all_teachers():
     for t in teachers: t["_id"] = str(t["_id"])
     return jsonify(teachers)
 
-# هذه الدالة هي المسؤولة عن زر Publish Skill وتحديث بياناتك لتظهر في البحث
 @app.route("/api/teach-skill", methods=["POST"])
 def publish_skill():
     data = request.json
@@ -184,7 +180,6 @@ def publish_skill():
     if not user_id or not new_skill:
         return jsonify({"error": "Missing info"}), 400
 
-    # إضافة المهارة وتفعيل دور المعلم فوراً
     users_col.update_one(
         {"_id": ObjectId(user_id)},
         {
@@ -266,16 +261,12 @@ def get_history(user_id):
     
     history = []
     for t in transactions:
-        # التعامل مع النوعين (Wallet Update أو Skill Swap)
         desc = t.get("description", "Transaction")
         date_str = t["timestamp"].strftime("%Y-%m-%d") if isinstance(t.get("timestamp"), datetime) else t.get("date", "N/A")
         
-        # تحديد الإشارة (+ أو -)
         amt = t.get("amount", 0)
         if t.get("type") == "skill_swap" and str(t.get("learnerId")) == user_id:
             amt = -amt
-        elif t.get("type") == "payment":
-             pass # المبلغ محدد سابقاً
         
         history.append({
             "description": desc,
@@ -348,16 +339,12 @@ def get_user_bookings(user_id):
     for b in bookings: b["_id"] = str(b["_id"])
     return jsonify(bookings)
 
-# ==========================================
-# استبدل دالة update_booking_status بهذه النسخة المصححة
-# ==========================================
 @app.route("/api/bookings/<booking_id>/status", methods=["PUT"])
 def update_booking_status(booking_id):
     try:
         data = request.json
         new_status = data.get("status")
         
-        # تحويل Booking ID
         if not ObjectId.is_valid(booking_id):
             return jsonify({"error": "Invalid ID format"}), 400
         
@@ -375,7 +362,6 @@ def update_booking_status(booking_id):
             if not learner_id_str or not teacher_id_str:
                 return jsonify({"error": "Missing IDs in booking"}), 400
 
-            # تحويل IDs المستخدمين إلى ObjectId لضمان قبول MongoDB لها
             learner_oid = ObjectId(learner_id_str)
             teacher_oid = ObjectId(teacher_id_str)
 
@@ -392,49 +378,29 @@ def update_booking_status(booking_id):
             # 2. إضافة للمعلم
             users_col.update_one({"_id": teacher_oid}, {"$inc": {"creditBalance": 1}})
             
-            # 3. تسجيل العملية (هنا كان يحدث الخطأ غالباً)
-            # نقوم بإدخال البيانات بالشكل الصحيح (ObjectIds) لتجاوز الـ Validation
+            # 3. تسجيل العملية
             transaction_doc = {
-                "learnerId": learner_id_str, # نخزنها كنص للعرض السهل
+                "learnerId": learner_id_str,
                 "teacherId": teacher_id_str,
-                "user": learner_oid, # ربط مرجعي بـ ObjectId (مهم لقواعد البيانات الصارمة)
+                "user": learner_oid, 
                 "amount": 1, 
                 "timestamp": datetime.now(timezone.utc), 
                 "type": "skill_swap",
                 "description": f"Session: {booking.get('skill', 'Unknown')}"
             }
             
-            # محاولة الإدخال - إذا فشلت بسبب الـ Validation نتجاوزها
             try:
                 transactions_col.insert_one(transaction_doc)
             except Exception as e:
                 print(f"Transaction Log Error (Ignored): {e}")
-                # نكمل الكود حتى لو فشل تسجيل العملية، المهم الأرصدة تغيرت
 
-        # تحديث حالة الحجز
+        # تحديث الحالة النهائية
         bookings_col.update_one({"_id": booking_oid}, {"$set": {"status": new_status}})
         return jsonify({"message": f"Success! Session is {new_status}"}), 200
 
     except Exception as e:
         print(f"❌ SERVER ERROR: {e}")
-        return jsonify({"error": f"Database Validation Error: {str(e)}"}), 500
-
-        # 3. تحديث الحالة النهائية
-        bookings_col.update_one({"_id": ObjectId(booking_id)}, {"$set": {"status": new_status}})
-        return jsonify({"message": f"Success! Status changed to {new_status}"}), 200
-
-    except Exception as e:
-        # طباعة الخطأ الكامل في التيرمينال لنعرف السبب
-        print(f"❌ SERVER ERROR: {str(e)}")
         return jsonify({"error": f"Server Error: {str(e)}"}), 500
-
-        # 3. تحديث حالة الحجز
-        bookings_col.update_one({"_id": ObjectId(booking_id)}, {"$set": {"status": new_status}})
-        return jsonify({"message": f"Booking updated to {new_status}"}), 200
-
-    except Exception as e:
-        print(f"Server Error in Update Status: {e}") # طباعة الخطأ في التيرمينال
-        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/bookings/<booking_id>/finish", methods=["PUT"])
 def finish_booking(booking_id):
@@ -524,19 +490,16 @@ def social_login():
     return jsonify({"status": "success", "userId": user_id, "fullName": name, "profilePicture": pic, "creditBalance": credits, "roles": roles})
 
 # ======================
-# AI ROUTES (UPDATED)
+# 10. AI ROUTES
 # ======================
 @app.route("/api/ai/matches/<user_id>")
 def get_ai_matches(user_id):
     try:
         user = users_col.find_one({"_id": ObjectId(user_id)})
-        # نرسل اهتمامات التعلم + المهارات الحالية للمساعدة في المطابقة
         interests = user.get("learningSkills", []) + user.get("skillTags", [])
         
-        # جلب المعلمين (نستثني المستخدم نفسه)
         teachers = list(users_col.find({"roles": "teacher", "_id": {"$ne": ObjectId(user_id)}}))
         
-        # تجهيز البيانات للـ AI
         teachers_data = [{
             "id": str(t["_id"]), 
             "name": t["fullName"], 
@@ -544,10 +507,8 @@ def get_ai_matches(user_id):
             "headline": t.get("headline", "Mentor")
         } for t in teachers]
         
-        # استدعاء الـ AI
         recommendations = AIService.get_smart_matches(interests, teachers_data)
         
-        # خدعة: إذا فشل الـ AI أو لم يجد نتائج، نرجع أي معلم عشوائي مؤقتاً
         if not recommendations and teachers_data:
             t = teachers_data[0]
             recommendations = [{
@@ -555,7 +516,7 @@ def get_ai_matches(user_id):
                 "match_percentage": "85%", "reason": "Recommended based on community popularity."
             }]
 
-        return jsonify({"recommendations": recommendations}) # نرجع المصفوفة مباشرة
+        return jsonify({"recommendations": recommendations})
         
     except Exception as e:
         print(f"Match Route Error: {e}")
@@ -566,17 +527,70 @@ def ai_generate_bio():
     data = request.json
     name = data.get("name")
     skills = data.get("skills")
-    headline = data.get("headline", "") # استقبال العنوان الوظيفي
+    headline = data.get("headline", "")
 
     if not name or not skills:
         return jsonify({"error": "Missing data"}), 400
 
     try:
-        # نمرر العنوان الوظيفي للدالة
         new_bio = AIService.generate_bio(name, skills, headline)
         return jsonify({"bio": new_bio})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# ======================
+# 11. NEW RATING SYSTEM (Corrected for MongoDB)
+# ======================
+@app.route('/api/save-rating', methods=['POST'])
+def save_rating():
+    try:
+        # استقبال البيانات
+        data = request.get_json()
+
+        # 1. استخراج البيانات (حسب الـ Schema المطلوبة)
+        rating = data.get('rating')
+        reviewer = data.get('reviewer')     # المستخدم الذي يقيم
+        target_user = data.get('targetUser') # المستخدم الذي يتم تقييمه
+
+        # 2. التحقق من صحة البيانات
+        if not rating or not reviewer or not target_user:
+            return jsonify({'success': False, 'message': 'بيانات ناقصة: rating, reviewer, targetUser مطلوبين'}), 400
+
+        # التأكد أن التقييم رقم صحيح بين 1 و 5
+        try:
+            rating = int(rating)
+            if not (1 <= rating <= 5):
+                raise ValueError
+        except ValueError:
+            return jsonify({'success': False, 'message': 'التقييم يجب أن يكون رقم بين 1 و 5'}), 400
+
+        # 3. تجهيز الوثيقة للحفظ في MongoDB
+        rating_doc = {
+            "rating": rating,
+            "reviewer": reviewer,
+            "targetUser": target_user,
+            "createdAt": datetime.now(timezone.utc)
+        }
+
+        # 4. الحفظ في الكولكشن (Ratings)
+        # سيتم استخدام ratings_col المعرف في الأعلى
+        ratings_col.insert_one(rating_doc)
+
+        # 5. (اختياري) تحديث متوسط تقييم المعلم في جدول المستخدمين
+        # لضمان ظهور النجوم الجديدة في البروفايل مباشرة
+        all_ratings = list(ratings_col.find({"targetUser": target_user}))
+        if all_ratings:
+            avg_rating = round(sum(r["rating"] for r in all_ratings) / len(all_ratings), 1)
+            users_col.update_one(
+                {"_id": ObjectId(target_user)}, 
+                {"$set": {"ratingAvg": avg_rating, "totalReviews": len(all_ratings)}}
+            )
+
+        return jsonify({'success': True, 'message': 'تم حفظ التقييم بنجاح'}), 200
+
+    except Exception as e:
+        print(f"Error saving rating: {e}")
+        return jsonify({'success': False, 'message': 'حدث خطأ في السيرفر'}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
